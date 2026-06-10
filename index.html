@@ -100,7 +100,7 @@
   th { text-align: left; padding: 0 12px 10px; color: var(--text3); font-weight: 400; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
   th:first-child { padding-left: 0; }
   th.right { text-align: right; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: default; }
   tbody tr:hover { background: var(--bg2); }
   td { padding: 11px 12px; color: var(--text); vertical-align: middle; }
   td:first-child { padding-left: 0; }
@@ -176,12 +176,12 @@
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('consulta')">consultar SKU</button>
-  <button class="tab" onclick="switchTab('produtos')">produtos</button>
+  <button id="tab-btn-consulta" class="tab" onclick="switchTab('consulta')">Consultar SKU</button>
+  <button id="tab-btn-produtos" class="tab active" onclick="switchTab('produtos')">Produtos</button>
 </div>
 
 <!-- ====== TAB: CONSULTA ====== -->
-<div id="tab-consulta" class="tab-content active">
+<div id="tab-consulta" class="tab-content">
   <div class="consulta-wrap">
     <div class="search-sku-row">
       <input type="text" id="sku-input" placeholder="Digite o SKU..." autocomplete="off" oninput="consultarSKU()">
@@ -202,7 +202,7 @@
 </div>
 
 <!-- ====== TAB: PRODUTOS ====== -->
-<div id="tab-produtos" class="tab-content">
+<div id="tab-produtos" class="tab-content active">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
     <div></div>
     <div style="display:flex; gap:8px;">
@@ -226,8 +226,7 @@
         <th class="right">Peso real</th>
         <th class="right">Peso ML</th>
         <th class="right">Frete</th>
-        <th class="right">Base</th>
-        <th class="right">Origem</th>
+        <th class="right">Preço de Venda</th>
         <th></th>
       </tr>
     </thead>
@@ -278,7 +277,7 @@
       <div class="preview-item"><div class="preview-label">Frete máx.</div><div class="preview-value highlight" id="prev-frete-max">—</div><div class="preview-sub">acima R$ 200</div></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger" id="btn-deletar" onclick="deletarProduto()" style="display:none; margin-right:auto;">deletar</button>
+      <button class="btn btn-danger" id="btn-deletar" onclick="deletarProduto()" style="display:none; margin-right:auto;">Deletar produto</button>
       <button class="btn" onclick="fecharModal()">cancelar</button>
       <button class="btn btn-primary" onclick="salvarProduto()">salvar</button>
     </div>
@@ -309,6 +308,7 @@ const PRODUTOS_XLSX = {"ALMO-01":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35,"m
 const STORAGE_KEY = 'frete-ml-produtos-v2';
 let produtos = [];
 let editandoIndex = -1;
+let editandoPrecoSku = null;
 
 // ============================================================
 // LÓGICA DE FRETE
@@ -402,13 +402,46 @@ function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  event.target.classList.add('active');
+  document.getElementById('tab-btn-' + name).classList.add('active');
   if (name === 'produtos') renderTabela();
+  if (name === 'consulta' && !document.getElementById('sku-input').value.trim()) {
+    renderEmptyStateConsulta(document.getElementById('sku-resultado'));
+  }
 }
 
 // ============================================================
 // CONSULTA SKU
 // ============================================================
+function contarProdutos() {
+  const xlsxList = Object.entries(PRODUTOS_XLSX).map(([sku, d]) => ({ ...d, sku }));
+  const localSkus = new Set(produtos.map(p => p.sku.toUpperCase()));
+  const todos = [
+    ...xlsxList.filter(p => !localSkus.has(p.sku)),
+    ...produtos
+  ];
+  const comPreco = todos.filter(p => p.precoVenda && p.precoVenda > 0).length;
+  return { comPreco, semPreco: todos.length - comPreco };
+}
+
+function renderEmptyStateConsulta(div) {
+  const { comPreco, semPreco } = contarProdutos();
+  div.innerHTML = `
+    <div style="text-align:center;padding:48px 0;">
+      <img src="logo2-cfn.png" alt="" style="width:72px;opacity:0.55;display:block;margin:0 auto 20px;">
+      <div style="font-family:var(--mono);font-size:14px;color:var(--text2);margin-bottom:28px;">Digite um SKU para calcular o frete</div>
+      <div style="display:inline-flex;gap:32px;align-items:flex-start;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <span style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--accent-text);">${comPreco}</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">com preço cadastrado</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <a href="#" onclick="event.preventDefault();switchTab('produtos');" style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--red);text-decoration:none;">${semPreco}</a>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">sem preço cadastrado</span>
+        </div>
+      </div>
+    </div>`;
+}
+
 function getProduto(sku) {
   // Prioridade: produtos do localStorage, depois do xlsx
   const local = produtos.find(p => p.sku.toUpperCase() === sku.toUpperCase());
@@ -423,7 +456,7 @@ function consultarSKU() {
   const div = document.getElementById('sku-resultado');
   const simularRow = document.getElementById('simular-preco-row');
 
-  if (!q) { div.innerHTML = ''; simularRow.style.display = 'none'; return; }
+  if (!q) { simularRow.style.display = 'none'; renderEmptyStateConsulta(div); return; }
 
   const p = getProduto(q);
 
@@ -525,7 +558,6 @@ function salvarStorage() { localStorage.setItem(STORAGE_KEY, JSON.stringify(prod
 function renderTabela() {
   const q = document.getElementById('search').value.toLowerCase();
 
-  // Mescla: xlsx como base, localStorage sobrescreve/adiciona
   const xlsxList = Object.entries(PRODUTOS_XLSX).map(([sku, d]) => ({ ...d, sku, origem: 'xlsx' }));
   const localSkus = new Set(produtos.map(p => p.sku.toUpperCase()));
   const base = [
@@ -542,11 +574,6 @@ function renderTabela() {
 
   document.getElementById('tbody').innerHTML = filtrados.map(p => {
     const pesoML = calcularPesoML(p);
-    const cubico = (p.comp * p.larg * p.alt) / 6000;
-    const base2 = cubico >= (p.pesoReal||0) ? 'cúbico' : 'real';
-    const tagClass = base2 === 'cúbico' ? 'tag-cubico' : 'tag-real';
-    const fmin = freteMin(pesoML); const fmax = freteMax(pesoML);
-    // Frete específico pelo preço cadastrado
     let freCell;
     const preco = p.precoVenda || null;
     if (preco && preco > 0) {
@@ -555,20 +582,29 @@ function renderTabela() {
     } else {
       freCell = `<td class="right"><span style="font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">sem preço</span></td>`;
     }
-    const origemTag = p.origem === 'xlsx'
-      ? `<span class="tag tag-xlsx">xlsx</span>`
-      : `<span class="tag" style="background:var(--accent-dim);color:var(--accent-text);border:1px solid var(--accent-dim2);">local</span>`;
     const localIdx = produtos.findIndex(lp => lp.sku.toUpperCase() === p.sku.toUpperCase());
     const editIdx = localIdx >= 0 ? localIdx : -1;
-    return `<tr onclick="editarProduto(${editIdx}, '${p.sku}')">
+    const isEditingPrice = editandoPrecoSku === p.sku;
+    let precoVendaCell;
+    if (isEditingPrice) {
+      precoVendaCell = `<td class="right"><input id="inline-preco-input" type="number" step="0.01" min="0" value="${p.precoVenda || ''}" style="font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--accent);color:var(--text);padding:3px 7px;border-radius:4px;width:100px;outline:none;text-align:right;" placeholder="0.00" onkeydown="if(event.key==='Enter')salvarPrecoInline();else if(event.key==='Escape'){editandoPrecoSku=null;renderTabela();}"></td>`;
+    } else {
+      precoVendaCell = p.precoVenda && p.precoVenda > 0
+        ? `<td class="right accent">R$ ${fmt(p.precoVenda)}</td>`
+        : `<td class="right muted">—</td>`;
+    }
+    const btnDetalhes = `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="editarProduto(${editIdx},'${p.sku}')">Ver detalhes</button>`;
+    const btnPreco = isEditingPrice
+      ? `<button class="btn btn-primary" style="padding:4px 10px;font-size:10px;" onclick="salvarPrecoInline()">Salvar</button>`
+      : `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="iniciarEdicaoPreco('${p.sku}')">Alterar Preço</button>`;
+    return `<tr>
       <td class="sku-cell">${p.sku}</td>
       <td class="dim-cell">${p.comp} × ${p.larg} × ${p.alt}</td>
       <td class="right muted">${fmt(p.pesoReal||0)} kg</td>
       <td class="right muted">${fmt(pesoML)} kg</td>
       ${freCell}
-      <td class="right"><span class="tag ${tagClass}">${base2}</span></td>
-      <td class="right">${origemTag}</td>
-      <td class="right"><button class="btn btn-danger" style="padding:4px 10px;font-size:10px;" onclick="event.stopPropagation();confirmarDeletar(${editIdx},'${p.sku}')">✕</button></td>
+      ${precoVendaCell}
+      <td class="right" style="white-space:nowrap;"><div style="display:inline-flex;gap:6px;align-items:center;">${btnDetalhes}${btnPreco}</div></td>
     </tr>`;
   }).join('');
 }
@@ -594,9 +630,33 @@ function editarProduto(idx, sku) {
 
 function confirmarDeletar(idx, sku) {
   if (idx < 0) { toast('Produto do xlsx não pode ser deletado.'); return; }
-  if (confirm(`Deletar ${sku}?`)) {
+  if (confirm('Tem certeza que deseja deletar o produto?')) {
     produtos.splice(idx, 1); salvarStorage(); renderTabela(); toast('Produto removido.');
   }
+}
+
+function iniciarEdicaoPreco(sku) {
+  editandoPrecoSku = sku;
+  renderTabela();
+  setTimeout(() => { const inp = document.getElementById('inline-preco-input'); if (inp) inp.focus(); }, 0);
+}
+
+function salvarPrecoInline() {
+  const input = document.getElementById('inline-preco-input');
+  const novoPreco = parseFloat(input ? input.value : '') || null;
+  const sku = editandoPrecoSku;
+  if (!sku) return;
+  const localIdx = produtos.findIndex(p => p.sku.toUpperCase() === sku.toUpperCase());
+  if (localIdx >= 0) {
+    produtos[localIdx].precoVenda = novoPreco;
+  } else {
+    const xlsx = PRODUTOS_XLSX[sku];
+    if (xlsx) produtos.push({ ...xlsx, sku, precoVenda: novoPreco });
+  }
+  salvarStorage();
+  editandoPrecoSku = null;
+  renderTabela();
+  toast('Preço salvo.', true);
 }
 
 function abrirModal(idx=-1) {
@@ -723,6 +783,7 @@ function atualizarIconeTema() {
 
 carregar();
 atualizarIconeTema();
+renderTabela();
 </script>
 </body>
 </html>
