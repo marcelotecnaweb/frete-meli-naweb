@@ -4,34 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora de Frete ML Full</title>
-<link rel="icon" type="image/png" href="logo2-cfn.png">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #0f0f0f; --bg2: #1a1a1a; --bg3: #222222;
     --border: #2e2e2e; --border2: #3a3a3a;
-    --text: #ffffff; --text2: #888; --text3: #555;
-    --accent: #FFE600; --accent2: #ccb800;
-    --accent-dim: rgba(255,230,0,0.08); --accent-dim2: rgba(255,230,0,0.15);
-    --accent-text: #FFE600;
+    --text: #e8e8e8; --text2: #888; --text3: #555;
+    --accent: #d4ff4e; --accent2: #a8cc3d;
+    --accent-dim: rgba(212,255,78,0.08); --accent-dim2: rgba(212,255,78,0.15);
     --red: #ff6b6b; --red-dim: rgba(255,107,107,0.1);
     --orange: #ffaa44; --orange-dim: rgba(255,170,68,0.1);
     --blue: #4ea8ff; --blue-dim: rgba(78,168,255,0.1);
-    --mono: 'Poppins', sans-serif; --sans: 'Poppins', sans-serif;
-    --btn-primary-text: #1a1a1a;
-  }
-  body.light-mode {
-    --bg: #ffffff; --bg2: #f4f5fb; --bg3: #eaecf7;
-    --border: #dde0f0; --border2: #c5cadf;
-    --text: #2D3277; --text2: #6b71a8; --text3: #aab0d8;
-    --accent: #FFE600; --accent2: #ccb800;
-    --accent-dim: rgba(255,230,0,0.10); --accent-dim2: rgba(255,230,0,0.20);
-    --accent-text: #2D3277;
-    --red: #dc2626; --red-dim: rgba(220,38,38,0.08);
-    --orange: #d97706; --orange-dim: rgba(217,119,6,0.08);
-    --blue: #2563eb; --blue-dim: rgba(37,99,235,0.08);
-    --btn-primary-text: #1a1a1a;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
   }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; padding: 24px; }
 
@@ -39,20 +25,20 @@
   .tabs { display: flex; gap: 2px; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
   .tab { font-family: var(--mono); font-size: 12px; padding: 10px 18px; background: none; border: none; color: var(--text3); cursor: pointer; letter-spacing: 0.04em; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
   .tab:hover { color: var(--text2); }
-  .tab.active { color: var(--accent-text); border-bottom-color: var(--accent); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
   header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; }
   .header-left { display: flex; align-items: baseline; gap: 14px; }
   h1 { font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: 0.02em; }
-  .badge { font-family: var(--mono); font-size: 10px; padding: 2px 7px; background: var(--accent-dim); color: var(--accent-text); border: 1px solid var(--accent-dim2); border-radius: 3px; letter-spacing: 0.05em; }
+  .badge { font-family: var(--mono); font-size: 10px; padding: 2px 7px; background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(212,255,78,0.25); border-radius: 3px; letter-spacing: 0.05em; }
   .header-right { display: flex; align-items: center; gap: 10px; }
 
   .btn { font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border2); background: var(--bg2); color: var(--text2); cursor: pointer; letter-spacing: 0.03em; transition: all 0.15s; }
-  .btn:hover { border-color: var(--accent); color: var(--accent-text); background: var(--accent-dim); }
-  .btn-primary { background: var(--accent); color: var(--btn-primary-text); border-color: var(--accent); font-weight: 500; }
-  .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: var(--btn-primary-text); }
+  .btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .btn-primary { background: var(--accent); color: #0f0f0f; border-color: var(--accent); font-weight: 500; }
+  .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: #0f0f0f; }
   .btn-danger { border-color: var(--border2); color: var(--text3); }
   .btn-danger:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
 
@@ -65,7 +51,7 @@
 
   .sku-result { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
   .sku-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
-  .sku-name { font-family: var(--mono); font-size: 16px; font-weight: 500; color: var(--accent-text); }
+  .sku-name { font-family: var(--mono); font-size: 16px; font-weight: 500; color: var(--accent); }
   .sku-dims { font-family: var(--mono); font-size: 11px; color: var(--text3); }
   .sku-pesos { display: flex; gap: 20px; margin-bottom: 20px; }
   .sku-peso-item { display: flex; flex-direction: column; gap: 2px; }
@@ -86,7 +72,7 @@
   .sku-not-found { font-family: var(--mono); font-size: 13px; color: var(--text3); padding: 40px 0; text-align: center; }
   .sugestoes { margin-top: 6px; }
   .sug-item { font-family: var(--mono); font-size: 12px; color: var(--text2); padding: 5px 10px; border-radius: 4px; cursor: pointer; display: inline-block; border: 1px solid var(--border); margin: 3px; transition: all 0.12s; }
-  .sug-item:hover { border-color: var(--accent); color: var(--accent-text); background: var(--accent-dim); }
+  .sug-item:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
   /* LISTA PRODUTOS */
   .search-wrap { margin-bottom: 20px; position: relative; }
@@ -100,17 +86,17 @@
   th { text-align: left; padding: 0 12px 10px; color: var(--text3); font-weight: 400; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
   th:first-child { padding-left: 0; }
   th.right { text-align: right; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: default; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
   tbody tr:hover { background: var(--bg2); }
   td { padding: 11px 12px; color: var(--text); vertical-align: middle; }
   td:first-child { padding-left: 0; }
   td.right { text-align: right; }
   td.muted { color: var(--text2); }
-  td.accent { color: var(--accent-text); font-weight: 500; }
+  td.accent { color: var(--accent); font-weight: 500; }
   .sku-cell { font-weight: 500; letter-spacing: 0.02em; }
   .dim-cell { color: var(--text2); font-size: 11px; }
   .tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 500; letter-spacing: 0.04em; }
-  .tag-cubico { background: var(--accent-dim2); color: var(--accent-text); border: 1px solid var(--accent-dim2); }
+  .tag-cubico { background: var(--accent-dim2); color: var(--accent); border: 1px solid rgba(212,255,78,0.2); }
   .tag-real { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,170,68,0.2); }
   .tag-xlsx { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(78,168,255,0.2); }
 
@@ -140,48 +126,68 @@
   .preview-item:last-child { border-right: none; }
   .preview-label { font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 5px; }
   .preview-value { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--text); }
-  .preview-value.highlight { color: var(--accent-text); }
+  .preview-value.highlight { color: var(--accent); }
   .preview-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
   .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
   .error-msg { font-family: var(--mono); font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
 
   .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 6px; padding: 10px 16px; font-family: var(--mono); font-size: 12px; color: var(--text); z-index: 200; opacity: 0; transform: translateY(8px); transition: all 0.2s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
-  .toast.success { border-color: var(--accent-dim2); color: var(--accent-text); }
+  .toast.success { border-color: rgba(212,255,78,0.3); color: var(--accent); }
 
   .faixa-card.destacado { background: var(--accent-dim2); border-color: var(--accent); }
-  .faixa-card.destacado .faixa-card-preco { color: var(--accent-text); }
-  .faixa-card.destacado .faixa-card-valor { color: var(--accent-text); }
+  .faixa-card.destacado .faixa-card-preco { color: var(--accent); }
+  .faixa-card.destacado .faixa-card-valor { color: var(--accent); }
   .faixa-card.apagado { opacity: 0.35; }
 
-  #theme-toggle {
-    position: fixed; top: 18px; right: 24px; z-index: 300;
-    background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px;
-    padding: 6px 14px; cursor: pointer; font-size: 11px; font-family: var(--mono);
-    color: var(--text2); display: flex; align-items: center; gap: 6px;
-    transition: all 0.2s; line-height: 1; white-space: nowrap;
-  }
-  #theme-toggle:hover { border-color: var(--accent); color: var(--accent-text); background: var(--accent-dim); }
+  /* LOGIN */
+  #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+  .login-box { background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; padding: 48px 40px; text-align: center; max-width: 380px; width: 100%; }
+  .login-titulo { font-family: var(--mono); font-size: 18px; font-weight: 500; margin-bottom: 6px; }
+  .login-sub { font-family: var(--sans); font-size: 13px; color: var(--text2); margin-bottom: 32px; line-height: 1.5; }
+  .google-btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 10px 22px; border-radius: 6px; border: 1px solid #dadce0; background: white; color: #3c4043; cursor: pointer; transition: box-shadow 0.15s; white-space: nowrap; }
+  .google-btn:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.35); }
 </style>
 </head>
-<body class="light-mode">
-<script>(function(){var t=localStorage.getItem('tema');if(t==='dark')document.body.classList.remove('light-mode');})()</script>
-<button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">🌙 Modo escuro</button>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-titulo">Frete ML Full</div>
+    <div class="login-sub">Faça login com sua conta Google para acessar e sincronizar preços via Sheets.</div>
+    <button class="google-btn" onclick="fazerLogin()">
+      <svg width="18" height="18" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Entrar com Google
+    </button>
+  </div>
+</div>
 
 <header>
   <div class="header-left">
     <h1>Frete ML Full</h1>
     <span class="badge">2026</span>
   </div>
+  <div class="header-right">
+    <div id="user-info" style="display:none; align-items:center; gap:10px;">
+      <span id="user-nome" style="font-family:var(--mono); font-size:12px; color:var(--text2);"></span>
+      <button class="btn btn-danger" onclick="fazerLogout()">sair</button>
+    </div>
+  </div>
 </header>
 
 <div class="tabs">
-  <button id="tab-btn-consulta" class="tab" onclick="switchTab('consulta')">Consultar SKU</button>
-  <button id="tab-btn-produtos" class="tab active" onclick="switchTab('produtos')">Produtos</button>
+  <button class="tab active" onclick="switchTab('consulta')">consultar SKU</button>
+  <button class="tab" onclick="switchTab('produtos')">produtos</button>
 </div>
 
 <!-- ====== TAB: CONSULTA ====== -->
-<div id="tab-consulta" class="tab-content">
+<div id="tab-consulta" class="tab-content active">
   <div class="consulta-wrap">
     <div class="search-sku-row">
       <input type="text" id="sku-input" placeholder="Digite o SKU..." autocomplete="off" oninput="consultarSKU()">
@@ -202,7 +208,7 @@
 </div>
 
 <!-- ====== TAB: PRODUTOS ====== -->
-<div id="tab-produtos" class="tab-content active">
+<div id="tab-produtos" class="tab-content">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
     <div></div>
     <div style="display:flex; gap:8px;">
@@ -225,8 +231,10 @@
         <th>Dimensões (cm)</th>
         <th class="right">Peso real</th>
         <th class="right">Peso ML</th>
-        <th class="right">Frete</th>
         <th class="right">Preço de Venda</th>
+        <th class="right">Frete</th>
+        <th class="right">Base</th>
+        <th class="right">Origem</th>
         <th></th>
       </tr>
     </thead>
@@ -277,7 +285,7 @@
       <div class="preview-item"><div class="preview-label">Frete máx.</div><div class="preview-value highlight" id="prev-frete-max">—</div><div class="preview-sub">acima R$ 200</div></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger" id="btn-deletar" onclick="deletarProduto()" style="display:none; margin-right:auto;">Deletar produto</button>
+      <button class="btn btn-danger" id="btn-deletar" onclick="deletarProduto()" style="display:none; margin-right:auto;">deletar</button>
       <button class="btn" onclick="fecharModal()">cancelar</button>
       <button class="btn btn-primary" onclick="salvarProduto()">salvar</button>
     </div>
@@ -287,6 +295,275 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ============================================================
+// CONFIGURAÇÃO GOOGLE
+// ============================================================
+const CLIENT_ID = '327580333878-ubsdn6929vejccckeic0kihn9fvqi5ab.apps.googleusercontent.com';
+const SHEET_ID  = '1cQb4EEQq5W2b0jgG_DDesDPoundNpz3sR78DYqisSaM';
+const SCOPES    = 'https://www.googleapis.com/auth/spreadsheets profile email';
+
+let accessToken  = null;
+let usuarioNome  = null;
+let precosSheets = {}; // { SKU: precoVenda }
+let skuEmEdicao  = null;
+let tokenClient  = null;
+
+function initGoogleAuth() {
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: handleTokenResponse
+  });
+}
+
+async function handleTokenResponse(resp) {
+  if (resp.error) { toast('Erro no login: ' + resp.error); return; }
+  accessToken = resp.access_token;
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo',
+      { headers: { 'Authorization': 'Bearer ' + accessToken } });
+    const info = await r.json();
+    usuarioNome = info.name || info.email || 'Usuário';
+  } catch(e) { usuarioNome = 'Usuário'; }
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('user-nome').textContent = usuarioNome;
+  document.getElementById('user-info').style.display = 'flex';
+  await inicializarSheets();
+}
+
+function fazerLogin() {
+  if (!tokenClient) {
+    try { initGoogleAuth(); } catch(e) { toast('Aguarde o carregamento do Google.'); return; }
+  }
+  tokenClient.requestToken();
+}
+
+function fazerLogout() {
+  if (accessToken) google.accounts.oauth2.revoke(accessToken, () => {});
+  accessToken = null; usuarioNome = null; precosSheets = {}; cadastroSheets = {};
+  excluidosSheets = new Set(); skuEmEdicao = null; editandoSku = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('user-info').style.display = 'none';
+}
+
+// ============================================================
+// SHEETS API — HELPERS
+// ============================================================
+async function sheetsGet(range) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}`;
+  const r = await fetch(url, { headers: { 'Authorization': 'Bearer ' + accessToken } });
+  return r.json();
+}
+
+async function sheetsAppend(range, values) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ values })
+  });
+  return r.json();
+}
+
+async function sheetsUpdate(range, values) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+  const r = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ values })
+  });
+  return r.json();
+}
+
+async function sheetsBatchUpdate(requests) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requests })
+  });
+  return r.json();
+}
+
+// ============================================================
+// INICIALIZAÇÃO DAS ABAS NO SHEETS
+// ============================================================
+async function inicializarSheets() {
+  toast('Conectando ao Google Sheets...');
+  try {
+    const metaUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?fields=sheets.properties`;
+    const metaR = await fetch(metaUrl, { headers: { 'Authorization': 'Bearer ' + accessToken } });
+    const meta = await metaR.json();
+    const nomes = (meta.sheets || []).map(s => s.properties.title);
+
+    // Cria abas que ainda não existem
+    const reqs = [];
+    if (!nomes.includes('Produtos'))  reqs.push({ addSheet: { properties: { title: 'Produtos'  } } });
+    if (!nomes.includes('Historico')) reqs.push({ addSheet: { properties: { title: 'Historico' } } });
+    if (!nomes.includes('Cadastro'))  reqs.push({ addSheet: { properties: { title: 'Cadastro'  } } });
+    if (!nomes.includes('Excluidos')) reqs.push({ addSheet: { properties: { title: 'Excluidos' } } });
+    if (reqs.length) await sheetsBatchUpdate(reqs);
+
+    // Cabeçalhos das abas recém-criadas (em paralelo)
+    const headers = [];
+    if (!nomes.includes('Produtos'))  headers.push(sheetsAppend('Produtos!A1',  [['SKU', 'PrecoVenda']]));
+    if (!nomes.includes('Historico')) headers.push(sheetsAppend('Historico!A1', [['DataHora', 'Usuario', 'SKU', 'PrecoAnterior', 'PrecoNovo']]));
+    if (!nomes.includes('Cadastro'))  headers.push(sheetsAppend('Cadastro!A1',  [['SKU', 'Comp', 'Larg', 'Alt', 'PesoReal', 'CadastradoPor', 'DataHora']]));
+    if (!nomes.includes('Excluidos')) headers.push(sheetsAppend('Excluidos!A1', [['SKU', 'ExcluidoPor', 'DataHora']]));
+    if (headers.length) await Promise.all(headers);
+
+    // Carrega as 3 abas de dados em paralelo
+    await Promise.all([carregarPrecosSheets(), carregarCadastroSheets(), carregarExcluidosSheets()]);
+    renderTabela();
+    consultarSKU();
+    toast('Sheets conectado!', true);
+  } catch(e) {
+    toast('Erro ao conectar Sheets.');
+    console.error(e);
+  }
+}
+
+async function carregarPrecosSheets() {
+  const data = await sheetsGet('Produtos!A:B');
+  precosSheets = {};
+  const rows = data.values || [];
+  for (let i = 1; i < rows.length; i++) {
+    const sku = (rows[i][0] || '').toUpperCase();
+    const preco = parseFloat(rows[i][1]);
+    if (sku && !isNaN(preco)) precosSheets[sku] = preco;
+  }
+}
+
+async function carregarCadastroSheets() {
+  const data = await sheetsGet('Cadastro!A:E');
+  cadastroSheets = {};
+  const rows = data.values || [];
+  for (let i = 1; i < rows.length; i++) {
+    const sku   = (rows[i][0] || '').toUpperCase();
+    const comp  = parseFloat(rows[i][1]);
+    const larg  = parseFloat(rows[i][2]);
+    const alt   = parseFloat(rows[i][3]);
+    const peso  = parseFloat(rows[i][4]) || null;
+    if (sku && comp && larg && alt) cadastroSheets[sku] = { comp, larg, alt, pesoReal: peso };
+  }
+}
+
+async function carregarExcluidosSheets() {
+  const data = await sheetsGet('Excluidos!A:A');
+  excluidosSheets = new Set();
+  const rows = data.values || [];
+  for (let i = 1; i < rows.length; i++) {
+    const sku = (rows[i][0] || '').toUpperCase();
+    if (sku) excluidosSheets.add(sku);
+  }
+}
+
+// ============================================================
+// SALVAR PREÇO NO SHEETS
+// ============================================================
+async function salvarPrecoSheets(sku, precoNovo, nomeUsuario) {
+  sku = sku.toUpperCase();
+  const precoAnterior = precosSheets[sku] !== undefined ? precosSheets[sku] : '';
+  try {
+    const data = await sheetsGet('Produtos!A:B');
+    const rows = data.values || [];
+    let rowNum = -1;
+    for (let i = 1; i < rows.length; i++) {
+      if ((rows[i][0] || '').toUpperCase() === sku) { rowNum = i + 1; break; }
+    }
+    if (rowNum > 0) {
+      await sheetsUpdate(`Produtos!B${rowNum}`, [[precoNovo]]);
+    } else {
+      await sheetsAppend('Produtos!A:B', [[sku, precoNovo]]);
+    }
+    const agora = new Date().toLocaleString('pt-BR');
+    await sheetsAppend('Historico!A:E', [[agora, nomeUsuario, sku, precoAnterior, precoNovo]]);
+    precosSheets[sku] = precoNovo;
+    renderTabela();
+    consultarSKU();
+    toast('Preço salvo!', true);
+  } catch(e) {
+    toast('Erro ao salvar preço.');
+    console.error(e);
+  }
+}
+
+// ============================================================
+// SALVAR CADASTRO (dimensões/peso) NO SHEETS
+// ============================================================
+async function salvarCadastroSheets(sku, comp, larg, alt, pesoReal, nomeUsuario) {
+  sku = sku.toUpperCase();
+  try {
+    const data = await sheetsGet('Cadastro!A:A');
+    const rows = data.values || [];
+    let rowNum = -1;
+    for (let i = 1; i < rows.length; i++) {
+      if ((rows[i][0] || '').toUpperCase() === sku) { rowNum = i + 1; break; }
+    }
+    const agora = new Date().toLocaleString('pt-BR');
+    const linha = [[sku, comp, larg, alt, pesoReal || '', nomeUsuario, agora]];
+    if (rowNum > 0) {
+      await sheetsUpdate(`Cadastro!A${rowNum}:G${rowNum}`, linha);
+    } else {
+      await sheetsAppend('Cadastro!A:G', linha);
+    }
+    cadastroSheets[sku] = { comp, larg, alt, pesoReal };
+    renderTabela();
+    consultarSKU();
+    toast('Produto salvo!', true);
+  } catch(e) {
+    toast('Erro ao salvar cadastro.');
+    console.error(e);
+  }
+}
+
+// ============================================================
+// EXCLUIR PRODUTO (grava na aba Excluidos, não apaga nada)
+// ============================================================
+async function excluirProdutoSheets(sku, nomeUsuario) {
+  sku = sku.toUpperCase();
+  try {
+    const agora = new Date().toLocaleString('pt-BR');
+    await sheetsAppend('Excluidos!A:C', [[sku, nomeUsuario, agora]]);
+    excluidosSheets.add(sku);
+    skuEmEdicao = null;
+    renderTabela();
+    consultarSKU();
+    toast('Produto movido para Excluídos.');
+  } catch(e) {
+    toast('Erro ao excluir produto.');
+    console.error(e);
+  }
+}
+
+// ============================================================
+// EDIÇÃO INLINE DE PREÇO NA TABELA
+// ============================================================
+function alterarPreco(sku, event) {
+  event.stopPropagation();
+  if (!accessToken) { toast('Faça login primeiro.'); return; }
+  skuEmEdicao = sku.toUpperCase();
+  renderTabela();
+  const inp = document.getElementById('preco-inp-' + skuEmEdicao.replace(/[^a-zA-Z0-9]/g, '_'));
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+function confirmarAlteracaoPreco(sku, event) {
+  event.stopPropagation();
+  const safeId = sku.replace(/[^a-zA-Z0-9]/g, '_');
+  const inp = document.getElementById('preco-inp-' + safeId);
+  const novo = parseFloat(inp ? inp.value : '');
+  if (!novo || novo <= 0) { toast('Preço inválido.'); return; }
+  skuEmEdicao = null;
+  salvarPrecoSheets(sku, novo, usuarioNome);
+}
+
+function cancelarEdicaoPreco(event) {
+  event.stopPropagation();
+  skuEmEdicao = null;
+  renderTabela();
+}
+
 // ============================================================
 // TABELAS DE FRETE (extraídas do xlsx)
 // Formato: [limite_superior_kg, col1, col2, ...]
@@ -305,10 +582,9 @@ const COLUNAS_VAR = ['R$ 79–99,99','R$ 100–119,99','R$ 120–149,99','R$ 150
 // Produtos do xlsx (base fixa, não editável)
 const PRODUTOS_XLSX = {"ALMO-01":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35,"maiorPeso":1.17},"ALMO-02":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35,"maiorPeso":1.17},"AMA-01":{"larg":12,"comp":8,"alt":34,"pesoReal":1.15,"maiorPeso":1.15},"ANDEMP1-01":{"larg":36,"comp":12,"alt":32.5,"pesoReal":1.7,"maiorPeso":2.34},"ANDEMP1-02":{"larg":46,"comp":11,"alt":33.5,"pesoReal":1.4,"maiorPeso":2.8251666666666666},"ANDEMP3-01":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ANDEMP3-02":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ANDEMP3-03":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ARACAB-BR":{"larg":19.5,"comp":6,"alt":57,"pesoReal":1.45,"maiorPeso":1.45},"ARACAB-PT":{"larg":19.5,"comp":6,"alt":57,"pesoReal":1.4,"maiorPeso":1.4},"ASSREDU-AZ":{"larg":50.5,"comp":7.5,"alt":37.5,"pesoReal":1.35,"maiorPeso":2.3671875},"ASSREDU-CZ":{"larg":51.3,"comp":7.5,"alt":37.5,"pesoReal":1.5,"maiorPeso":2.4046875},"ASSREDU-RS":{"larg":50.3,"comp":7.5,"alt":37.5,"pesoReal":1.45,"maiorPeso":2.3578125},"BATER1-AZ":{"larg":27,"comp":10,"alt":18,"pesoReal":0.3,"maiorPeso":0.81},"BATER1-VM":{"larg":27,"comp":10,"alt":18,"pesoReal":0.3,"maiorPeso":0.81},"BATER2-AZ":{"larg":36.1,"comp":16.5,"alt":31,"pesoReal":1.15,"maiorPeso":3.077525},"BATER2-VM":{"larg":36.1,"comp":16.5,"alt":31,"pesoReal":1.15,"maiorPeso":3.077525},"BIKE12-AZ":{"larg":70,"comp":18,"alt":29,"pesoReal":4.65,"maiorPeso":6.09},"BIKE12-BR":{"larg":69.5,"comp":17.5,"alt":28.5,"pesoReal":4.65,"maiorPeso":5.7771875},"BIKE12-PT":{"larg":70,"comp":16,"alt":28.5,"pesoReal":4.65,"maiorPeso":5.32},"BIKE12-RS":{"larg":70.2,"comp":16.5,"alt":29,"pesoReal":4.55,"maiorPeso":5.59845},"BOLSA04-01":{"larg":25,"comp":7,"alt":30,"pesoReal":0.65,"maiorPeso":0.875},"BOLSA04-02":{"larg":30,"comp":7,"alt":32,"pesoReal":0.35,"maiorPeso":1.12},"BOLSA05-01":{"larg":29,"comp":8,"alt":28,"pesoReal":0.4,"maiorPeso":1.0826666666666667},"BOLSA06-01":{"larg":29,"comp":10,"alt":28,"pesoReal":0.4,"maiorPeso":1.3533333333333333},"BOLSA06-02":{"larg":26,"comp":6,"alt":27,"pesoReal":0.5,"maiorPeso":0.702},"BON-09":{"larg":20.2,"comp":13,"alt":47.5,"pesoReal":1.15,"maiorPeso":2.078916666666666},"CAB30-01":{"larg":40.5,"comp":32,"alt":10,"pesoReal":2.15,"maiorPeso":2.16},"CAB30-02":{"larg":40,"comp":32.5,"alt":9.5,"pesoReal":2.1,"maiorPeso":2.1},"CAB30-03":{"larg":40,"comp":32,"alt":9.5,"pesoReal":2.2,"maiorPeso":2.2},"CAB50-01":{"larg":39.5,"comp":32,"alt":14,"pesoReal":3.3,"maiorPeso":3.3},"CAB50-02":{"larg":40,"comp":32,"alt":14,"pesoReal":3.3,"maiorPeso":3.3},"CAB50-03":{"larg":40,"comp":32.3,"alt":14,"pesoReal":3.45,"maiorPeso":3.45},"CABINF20-AZ":{"larg":31.5,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8019375},"CABINF20-BG":{"larg":31,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8},"CABINF20-PT":{"larg":31,"comp":7,"alt":24,"pesoReal":0.8,"maiorPeso":0.868},"CABINF20-RS":{"larg":31,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8},"CABINF40-AZ":{"larg":31,"comp":11.5,"alt":23.5,"pesoReal":1.5,"maiorPeso":1.5},"CABINF40-BG":{"larg":31.5,"comp":12,"alt":23,"pesoReal":1.45,"maiorPeso":1.449},"CABINF40-PT":{"larg":31,"comp":12,"alt":24,"pesoReal":1.59,"maiorPeso":1.59},"CABINF40-RS":{"larg":31,"comp":12,"alt":24,"pesoReal":1.55,"maiorPeso":1.55},"CABMAN-BR":{"larg":60.5,"comp":6.5,"alt":37,"pesoReal":1.35,"maiorPeso":2.4250416666666665},"CABMAN-BR2":{"larg":16.5,"comp":6,"alt":18,"pesoReal":0.65,"maiorPeso":0.65},"CABMAN-PT":{"larg":60.5,"comp":6.5,"alt":37,"pesoReal":1.35,"maiorPeso":2.4250416666666665},"CABMAN-PT2":{"larg":16.5,"comp":6,"alt":18,"pesoReal":0.65,"maiorPeso":0.65},"CABMD1-10":{"larg":32,"comp":6,"alt":32.5,"pesoReal":1.175,"maiorPeso":1.175},"CABMD1-100":{"larg":33.5,"comp":33.5,"alt":62.5,"pesoReal":10.95,"maiorPeso":11.690104166666666},"CABMD1-20":{"larg":33,"comp":12.5,"alt":32,"pesoReal":2.25,"maiorPeso":2.25},"CABMD1-30":{"larg":32.5,"comp":18.5,"alt":32.5,"pesoReal":3.3,"maiorPeso":3.3},"CABREG-PT":{"larg":66.5,"comp":7.5,"alt":12,"pesoReal":1.25,"maiorPeso":1.25},"CADALM-AZ":{"larg":40,"comp":40,"alt":42.5,"pesoReal":1.65,"maiorPeso":11.333333333333334},"CADALM-RS":{"larg":40,"comp":40,"alt":42.5,"pesoReal":1.65,"maiorPeso":11.333333333333334},"CADALM2-AZ":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-BR":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-CZ":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-RS":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM3-AZ":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":8.91},"CADALM3-CZ":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":8.91},"CADALM3-RS":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":1.73},"CADALM4-AZ":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-BR":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-CZ":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-RS":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADEINF01-AZ":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEINF02-VD":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEINF03-RS":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEIR1-CZ":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CADEIR1-PT":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CADEIR1-VM":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CAIXAORG-01":{"larg":52,"comp":5,"alt":30,"pesoReal":0.9,"maiorPeso":1.3},"CAIXAORG-02":{"larg":52,"comp":5,"alt":30,"pesoReal":0.9,"maiorPeso":1.3},"CAM-140":{"larg":86,"comp":25.5,"alt":15,"pesoReal":8.2,"maiorPeso":8.2},"CAM-180":{"larg":92,"comp":32,"alt":15.5,"pesoReal":12.15,"maiorPeso":12.15},"CAR1-CZ":{"larg":100,"comp":57,"alt":40,"pesoReal":18.45,"maiorPeso":38},"CAR2-BR":{"larg":100,"comp":57,"alt":40,"pesoReal":18.45,"maiorPeso":38},"CAR2-VM":{"larg":100,"comp":37.5,"alt":38,"pesoReal":18.2,"maiorPeso":23.75},"CAR4-AZ":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.3,"maiorPeso":2.82975},"CAR4-LJ":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.35,"maiorPeso":2.82975},"CAR4-VM":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.35,"maiorPeso":2.82975},"CARDINO-01":{"larg":42.5,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.9125},"CARDINO-02":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARDINO-03":{"larg":42.5,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.9125},"CARDINO-04":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARDINO-05":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARMU-BR":{"larg":42,"comp":32.5,"alt":16,"pesoReal":2.65,"maiorPeso":3.64},"CARMU-PT":{"larg":42,"comp":33,"alt":16,"pesoReal":2.65,"maiorPeso":3.696},"CARMU2-BR":{"larg":35,"comp":26,"alt":20,"pesoReal":1.2,"maiorPeso":3.033333333333333},"CARMU2-PT":{"larg":35,"comp":26,"alt":20,"pesoReal":1.2,"maiorPeso":3.033333333333333},"CERCADO01-AZ":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO01-CZ":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO01-RS":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO02-AZ":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CERCADO02-CZ":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CERCADO02-RS":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CESTO-01":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-02":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-03":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-04":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-05":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CHOC1-AM":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-AZ":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-BR":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-VD":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC2-AM":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC2-AZ":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"COZ01-01":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ01-02":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ01-03":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ012-01":{"larg":36,"comp":12,"alt":28,"pesoReal":0.9,"maiorPeso":2.016},"COZ03-01":{"larg":25,"comp":9,"alt":33,"pesoReal":0.65,"maiorPeso":1.2375},"COZ03-02":{"larg":25,"comp":9,"alt":33,"pesoReal":0.65,"maiorPeso":1.2375},"COZ04-01":{"larg":42,"comp":13,"alt":47,"pesoReal":1.5,"maiorPeso":4.277},"COZ04-02":{"larg":27,"comp":15,"alt":49,"pesoReal":1.5,"maiorPeso":3.3075},"COZ08-01":{"larg":67,"comp":15,"alt":53,"pesoReal":4.15,"maiorPeso":8.8775},"CXRE04-01":{"larg":26,"comp":9.5,"alt":15,"pesoReal":0.35,"maiorPeso":0.6175},"CXRE05-01":{"larg":29,"comp":18,"alt":24,"pesoReal":0.9,"maiorPeso":2.088},"DISP-01":{"larg":23,"comp":8,"alt":20,"pesoReal":0.2,"maiorPeso":0.6133333333333333},"ESCAV1-AM":{"larg":52.5,"comp":27,"alt":25,"pesoReal":2.1,"maiorPeso":5.90625},"ESCAV1-AZ":{"larg":55,"comp":27,"alt":25,"pesoReal":2.1,"maiorPeso":6.1875},"ESCOR-03":{"larg":62.5,"comp":35,"alt":9,"pesoReal":2.1,"maiorPeso":3.28125},"ESCOR-36":{"larg":37.05,"comp":12,"alt":26.5,"pesoReal":1.005,"maiorPeso":1.96365},"ESCOR-38":{"larg":38,"comp":12,"alt":26,"pesoReal":1.15,"maiorPeso":1.976},"ESCOR7-AZ":{"larg":90,"comp":53,"alt":36,"pesoReal":12.2,"maiorPeso":28.62},"ESCOR7-RS":{"larg":90,"comp":53,"alt":36,"pesoReal":12.2,"maiorPeso":28.62},"FER01-01":{"larg":27.5,"comp":10,"alt":22,"pesoReal":0.8,"maiorPeso":1.0083333333333333},"FER02-01":{"larg":36,"comp":8,"alt":40,"pesoReal":1.75,"maiorPeso":1.92},"GOL-01":{"larg":56,"comp":5,"alt":11,"pesoReal":0.3,"maiorPeso":0.5133333333333333},"GOL-02":{"larg":61,"comp":6,"alt":19,"pesoReal":0.85,"maiorPeso":1.159},"GRORG1-CZ":{"larg":58,"comp":19,"alt":13,"pesoReal":2.25,"maiorPeso":2.3876666666666666},"GRORG1-PT":{"larg":58,"comp":19,"alt":13,"pesoReal":2.25,"maiorPeso":2.3876666666666666},"GUITMIC-AZ":{"larg":43.5,"comp":5.5,"alt":32,"pesoReal":0.6,"maiorPeso":1.276},"GUITMIC-RS":{"larg":43.5,"comp":5.5,"alt":32,"pesoReal":0.6,"maiorPeso":1.276},"JOGOPAN-01":{"larg":50.5,"comp":30,"alt":16.5,"pesoReal":4.2,"maiorPeso":4.2},"JOGOPAN-06":{"larg":50,"comp":30,"alt":16.5,"pesoReal":4.5,"maiorPeso":4.5},"JOGOPAN-07":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"JOGOPAN-08":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"JOGOPAN-09":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"MAGNET11-01":{"larg":30,"comp":7,"alt":22,"pesoReal":0.6,"maiorPeso":0.77},"MAGNET17-01":{"larg":23,"comp":23,"alt":8,"pesoReal":0.75,"maiorPeso":0.75},"MAGNET2-01":{"larg":20,"comp":11,"alt":4,"pesoReal":0.6,"maiorPeso":0.6},"MAGNET3-01":{"larg":29,"comp":10,"alt":23,"pesoReal":1.3,"maiorPeso":1.3},"MAGNET4-01":{"larg":34,"comp":8,"alt":34,"pesoReal":1.65,"maiorPeso":1.65},"MERCADO01-01":{"larg":45,"comp":26,"alt":45,"pesoReal":2.45,"maiorPeso":8.775},"MERCADO02-01":{"larg":45,"comp":26,"alt":45,"pesoReal":2.45,"maiorPeso":8.775},"MERCADO03-01":{"larg":56,"comp":21,"alt":48,"pesoReal":2.35,"maiorPeso":9.408},"MERCADO04-01":{"larg":39,"comp":14,"alt":29,"pesoReal":1.1,"maiorPeso":2.639},"MERCADO04-02":{"larg":39,"comp":14,"alt":29,"pesoReal":1.005,"maiorPeso":2.639},"MES-DINOAZ":{"larg":33,"comp":8,"alt":25,"pesoReal":0.7,"maiorPeso":1.1},"MES-DINORS":{"larg":33,"comp":8,"alt":25,"pesoReal":0.7,"maiorPeso":1.1},"MESBLC1-AZ":{"larg":35,"comp":11,"alt":23,"pesoReal":0.7,"maiorPeso":1.4758333333333333},"MESBLC1-RS":{"larg":35,"comp":11,"alt":23,"pesoReal":0.7,"maiorPeso":1.4758333333333333},"MIXER1-PT":{"larg":53,"comp":10,"alt":22,"pesoReal":1.2,"maiorPeso":1.9433333333333334},"MOTO1-AZ":{"larg":91,"comp":34,"alt":48,"pesoReal":12.75,"maiorPeso":24.752},"MOTO1-VM":{"larg":91,"comp":34,"alt":48,"pesoReal":12.75,"maiorPeso":24.752},"PAT-01":{"larg":78,"comp":11,"alt":29,"pesoReal":4,"maiorPeso":4.147},"PAT-02":{"larg":78,"comp":11,"alt":29,"pesoReal":4,"maiorPeso":4.147},"PATINF-AZ":{"larg":49,"comp":16,"alt":28,"pesoReal":2.1,"maiorPeso":3.6586666666666665},"PATINF-RS":{"larg":49,"comp":16,"alt":28,"pesoReal":2.1,"maiorPeso":3.6586666666666665},"PATINFS-AZ":{"larg":57,"comp":14,"alt":24,"pesoReal":1.3,"maiorPeso":3.192},"PATINFS-PT":{"larg":57,"comp":13.5,"alt":24,"pesoReal":1.22,"maiorPeso":3.078},"PATINFS-RS":{"larg":57,"comp":14,"alt":24,"pesoReal":1.3,"maiorPeso":3.192},"PATALUM-RS-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-RS-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-RS-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PEGBIC1-VD":{"larg":19,"comp":16,"alt":30,"pesoReal":0.8,"maiorPeso":1.52},"PEGBIC2-RS":{"larg":19,"comp":16,"alt":30,"pesoReal":0.8,"maiorPeso":1.52},"PENTE1-01":{"larg":40,"comp":10,"alt":54,"pesoReal":1.45,"maiorPeso":3.6},"PENTE3-01":{"larg":29,"comp":6,"alt":28,"pesoReal":0.35,"maiorPeso":0.812},"PENTE3-02":{"larg":29,"comp":6,"alt":28,"pesoReal":0.35,"maiorPeso":0.812},"PENTE4-01":{"larg":45,"comp":7,"alt":28,"pesoReal":0.7,"maiorPeso":1.47},"PENTE4-02":{"larg":45,"comp":7,"alt":28,"pesoReal":0.7,"maiorPeso":1.47},"PIST-BOMB":{"larg":44,"comp":7,"alt":33,"pesoReal":0.8,"maiorPeso":1.694},"PIST-CON":{"larg":53,"comp":7,"alt":39,"pesoReal":1,"maiorPeso":2.4115},"PIST-EST":{"larg":44,"comp":7,"alt":31,"pesoReal":0.7,"maiorPeso":1.5913333333333333},"PIST-LAV":{"larg":39,"comp":6,"alt":30,"pesoReal":0.7,"maiorPeso":1.17},"PIST-POL":{"larg":44,"comp":7,"alt":33,"pesoReal":0.75,"maiorPeso":1.694},"PISTCON-180":{"larg":33,"comp":7,"alt":22,"pesoReal":0.5,"maiorPeso":0.847},"PISTCON-345":{"larg":35,"comp":10,"alt":27,"pesoReal":0.9,"maiorPeso":1.575},"PISTCON-98":{"larg":29,"comp":6,"alt":22,"pesoReal":0.45,"maiorPeso":0.638},"PISTDINO-217":{"larg":47,"comp":10,"alt":36,"pesoReal":1.4,"maiorPeso":2.82},"PISTDINO-277":{"larg":29,"comp":16,"alt":19,"pesoReal":1.25,"maiorPeso":1.4693333333333334},"PISTDINO-92":{"larg":32,"comp":9,"alt":21,"pesoReal":0.6,"maiorPeso":1.008},"PISTGAR-BOM":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PISTGAR-CON":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PISTGAR-POL":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PORTCHAV1-BG":{"larg":7.5,"comp":8.5,"alt":21,"pesoReal":0.8,"maiorPeso":0.8},"PORTCHAV2-BG":{"larg":19,"comp":9,"alt":26,"pesoReal":1.4,"maiorPeso":1.4},"PORTCHAV3-BG":{"larg":26,"comp":9,"alt":32,"pesoReal":2.3,"maiorPeso":2.3},"POTEH-01":{"larg":25,"comp":13,"alt":35.5,"pesoReal":1.95,"maiorPeso":1.95},"POTEH-03":{"larg":35,"comp":12.5,"alt":36,"pesoReal":3.15,"maiorPeso":3.15},"PRAN1-01":{"larg":38,"comp":9.5,"alt":67.5,"pesoReal":2,"maiorPeso":4.06125},"PRAN3-01":{"larg":38,"comp":10,"alt":67.5,"pesoReal":2.05,"maiorPeso":4.275},"PTERNO-PT":{"larg":23,"comp":7,"alt":30,"pesoReal":0.35,"maiorPeso":0.805},"QUAD1-AM":{"larg":73,"comp":38,"alt":38,"pesoReal":6.9,"maiorPeso":17.568666666666665},"SAP01-BR":{"larg":51,"comp":7,"alt":16,"pesoReal":0.95,"maiorPeso":0.952},"SAP01-PT":{"larg":51,"comp":7,"alt":16,"pesoReal":0.95,"maiorPeso":0.952},"SUPVAR-AZ":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR-BLACK":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR-PT":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR2-AZ":{"larg":72,"comp":9,"alt":7,"pesoReal":2.45,"maiorPeso":2.45},"TAP6MM-01":{"larg":59,"comp":7,"alt":36,"pesoReal":0.4,"maiorPeso":2.478},"TAP6MM-02":{"larg":59,"comp":7,"alt":36,"pesoReal":0.4,"maiorPeso":2.478},"TAP8MM-01":{"larg":73.5,"comp":8,"alt":35.5,"pesoReal":0.45,"maiorPeso":3.479},"TAP8MM-02":{"larg":73.5,"comp":8,"alt":35.5,"pesoReal":0.45,"maiorPeso":3.479},"TAPINF1-AZ":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF1-RS":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF1-VD":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-01":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-02":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-03":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TEC01-AZ":{"larg":49,"comp":14.5,"alt":19.5,"pesoReal":1.35,"maiorPeso":2.309125},"TEC01-RS":{"larg":54.5,"comp":10,"alt":47.5,"pesoReal":1.8,"maiorPeso":4.314583333333333},"TEND3-02":{"larg":32.5,"comp":4.5,"alt":24,"pesoReal":0.85,"maiorPeso":0.85},"TICO1-AM":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-AZ":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-BR":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-RS":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-VM":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO2-AM":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-AZ":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-RS":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-TR":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TRIC1-BR":{"larg":69,"comp":39,"alt":40.5,"pesoReal":9,"maiorPeso":18.16425},"TRIC1-RS":{"larg":69,"comp":39,"alt":41,"pesoReal":9,"maiorPeso":18.3885},"TRIC2-AZ":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-BR":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-LJ":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-RS":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-VM":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2EM1-AZ":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-BR":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-RS":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-VM":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRICC-AM":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-AZ":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-PT":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-RS":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-VM":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICSA-AM":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-AZ":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-BR":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-RS":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-VM":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"VACBAG04B-01":{"larg":25,"comp":6,"alt":36,"pesoReal":0.95,"maiorPeso":0.95},"VACBAG05B-01":{"larg":28,"comp":6,"alt":29,"pesoReal":0.4,"maiorPeso":0.812},"VACBAG10-01":{"larg":27,"comp":9,"alt":29,"pesoReal":1.3,"maiorPeso":1.3},"VACBAG10B-01":{"larg":30,"comp":7,"alt":32,"pesoReal":0.95,"maiorPeso":1.12}};
 
-const STORAGE_KEY = 'frete-ml-produtos-v2';
-let produtos = [];
-let editandoIndex = -1;
-let editandoPrecoSku = null;
+let cadastroSheets  = {}; // { SKU: { comp, larg, alt, pesoReal } }
+let excluidosSheets = new Set(); // Set de SKUs excluídos
+let editandoSku     = null; // SKU em edição no modal (null = novo produto)
 
 // ============================================================
 // LÓGICA DE FRETE
@@ -402,52 +678,24 @@ function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  document.getElementById('tab-btn-' + name).classList.add('active');
+  event.target.classList.add('active');
   if (name === 'produtos') renderTabela();
-  if (name === 'consulta' && !document.getElementById('sku-input').value.trim()) {
-    renderEmptyStateConsulta(document.getElementById('sku-resultado'));
-  }
 }
 
 // ============================================================
 // CONSULTA SKU
 // ============================================================
-function contarProdutos() {
-  const xlsxList = Object.entries(PRODUTOS_XLSX).map(([sku, d]) => ({ ...d, sku }));
-  const localSkus = new Set(produtos.map(p => p.sku.toUpperCase()));
-  const todos = [
-    ...xlsxList.filter(p => !localSkus.has(p.sku)),
-    ...produtos
-  ];
-  const comPreco = todos.filter(p => p.precoVenda && p.precoVenda > 0).length;
-  return { comPreco, semPreco: todos.length - comPreco };
-}
-
-function renderEmptyStateConsulta(div) {
-  const { comPreco, semPreco } = contarProdutos();
-  div.innerHTML = `
-    <div style="text-align:center;padding:48px 0;">
-      <img src="logo2-cfn.png" alt="" style="width:72px;opacity:0.55;display:block;margin:0 auto 20px;">
-      <div style="font-family:var(--mono);font-size:14px;color:var(--text2);margin-bottom:28px;">Digite um SKU para calcular o frete</div>
-      <div style="display:inline-flex;gap:32px;align-items:flex-start;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <span style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--accent-text);">${comPreco}</span>
-          <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">com preço cadastrado</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <a href="#" onclick="event.preventDefault();switchTab('produtos');" style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--red);text-decoration:none;">${semPreco}</a>
-          <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">sem preço cadastrado</span>
-        </div>
-      </div>
-    </div>`;
-}
-
 function getProduto(sku) {
-  // Prioridade: produtos do localStorage, depois do xlsx
-  const local = produtos.find(p => p.sku.toUpperCase() === sku.toUpperCase());
-  if (local) return { ...local, origem: 'local' };
-  const xlsx = PRODUTOS_XLSX[sku.toUpperCase()];
-  if (xlsx) return { ...xlsx, sku: sku.toUpperCase(), origem: 'xlsx' };
+  // Retorna null se o SKU estiver na lista de excluídos
+  // Prioridade de dimensões: cadastroSheets > PRODUTOS_XLSX
+  // precoVenda sempre vem de precosSheets
+  const skuUp = sku.toUpperCase();
+  if (excluidosSheets.has(skuUp)) return null;
+  const precoVenda = precosSheets[skuUp] || null;
+  const cad = cadastroSheets[skuUp];
+  if (cad) return { ...cad, sku: skuUp, precoVenda, origem: 'cadastro' };
+  const xlsx = PRODUTOS_XLSX[skuUp];
+  if (xlsx) return { ...xlsx, sku: skuUp, precoVenda, origem: 'xlsx' };
   return null;
 }
 
@@ -456,7 +704,7 @@ function consultarSKU() {
   const div = document.getElementById('sku-resultado');
   const simularRow = document.getElementById('simular-preco-row');
 
-  if (!q) { simularRow.style.display = 'none'; renderEmptyStateConsulta(div); return; }
+  if (!q) { div.innerHTML = ''; simularRow.style.display = 'none'; return; }
 
   const p = getProduto(q);
 
@@ -465,8 +713,10 @@ function consultarSKU() {
     renderResultadoSKU(p, div);
   } else {
     simularRow.style.display = 'none';
-    // Sugestões
-    const todas = [...Object.keys(PRODUTOS_XLSX), ...produtos.map(p=>p.sku)];
+    // Sugestões: PRODUTOS_XLSX + cadastroSheets, excluindo os excluídos
+    const todas = [...Object.keys(PRODUTOS_XLSX), ...Object.keys(cadastroSheets)]
+      .map(s => s.toUpperCase())
+      .filter(s => !excluidosSheets.has(s));
     const unicas = [...new Set(todas)];
     const sugs = unicas.filter(s => s.includes(q)).slice(0, 8);
     let html = `<div class="sku-not-found">SKU não encontrado: <strong>${q}</strong>`;
@@ -515,7 +765,7 @@ function renderResultadoSKU(p, div) {
   let precoSimBadge = '';
   if (precoSimulado > 0) {
     const fonte = simInput > 0 ? 'simulado' : 'cadastrado';
-    precoSimBadge = `<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;background:var(--accent-dim2);color:var(--accent-text);border:1px solid var(--accent-dim2);margin-left:8px;">R$ ${fmt(precoSimulado)} (${fonte})</span>`;
+    precoSimBadge = `<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;background:var(--accent-dim2);color:var(--accent);border:1px solid rgba(212,255,78,0.2);margin-left:8px;">R$ ${fmt(precoSimulado)} (${fonte})</span>`;
   }
 
   div.innerHTML = `
@@ -529,7 +779,7 @@ function renderResultadoSKU(p, div) {
         <div class="sku-peso-item"><span class="sku-peso-label">Dimensões</span><span class="sku-peso-val">${p.comp} × ${p.larg} × ${p.alt} cm</span></div>
         <div class="sku-peso-item"><span class="sku-peso-label">Peso real</span><span class="sku-peso-val">${fmt(p.pesoReal||0)} kg</span></div>
         <div class="sku-peso-item"><span class="sku-peso-label">Peso cúbico</span><span class="sku-peso-val">${fmt(cubico)} kg</span></div>
-        <div class="sku-peso-item"><span class="sku-peso-label">Faixa ML (${base})</span><span class="sku-peso-val" style="color:var(--accent-text);font-weight:500;">${faixaLabel(pesoML)}</span></div>
+        <div class="sku-peso-item"><span class="sku-peso-label">Faixa ML (${base})</span><span class="sku-peso-val" style="color:var(--accent);font-weight:500;">${faixaLabel(pesoML)}</span></div>
       </div>
       <div class="faixas-title">frete por faixa de preço de venda${idxDestacado >= 0 ? ' — card destacado é o ativo' : ''}</div>
       <div class="faixas-grid">
@@ -550,20 +800,24 @@ function renderResultadoSKU(p, div) {
 // ============================================================
 // LISTA / CRUD
 // ============================================================
-function carregar() {
-  try { produtos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { produtos = []; }
-}
-function salvarStorage() { localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos)); }
-
 function renderTabela() {
   const q = document.getElementById('search').value.toLowerCase();
 
-  const xlsxList = Object.entries(PRODUTOS_XLSX).map(([sku, d]) => ({ ...d, sku, origem: 'xlsx' }));
-  const localSkus = new Set(produtos.map(p => p.sku.toUpperCase()));
-  const base = [
-    ...xlsxList.filter(p => !localSkus.has(p.sku)),
-    ...produtos.map(p => ({ ...p, origem: 'local' }))
-  ].sort((a,b) => a.sku.localeCompare(b.sku));
+  // Fonte: PRODUTOS_XLSX + cadastroSheets, filtrado por excluidosSheets
+  // Dimensões de cadastroSheets têm prioridade sobre PRODUTOS_XLSX
+  const todosSkus = [...new Set([
+    ...Object.keys(PRODUTOS_XLSX).map(s => s.toUpperCase()),
+    ...Object.keys(cadastroSheets)
+  ])];
+  const base = todosSkus
+    .filter(sku => !excluidosSheets.has(sku))
+    .map(sku => {
+      const cad  = cadastroSheets[sku];
+      const xlsx = PRODUTOS_XLSX[sku];
+      const dados = cad || xlsx;
+      return { ...dados, sku, origem: cad ? 'cadastro' : 'xlsx' };
+    })
+    .sort((a, b) => a.sku.localeCompare(b.sku));
 
   const filtrados = base.filter(p => p.sku.toLowerCase().includes(q));
   document.getElementById('count-label').textContent = filtrados.length === 1 ? '1 produto' : `${filtrados.length} produtos`;
@@ -574,115 +828,105 @@ function renderTabela() {
 
   document.getElementById('tbody').innerHTML = filtrados.map(p => {
     const pesoML = calcularPesoML(p);
+    const cubico = (p.comp * p.larg * p.alt) / 6000;
+    const base2 = cubico >= (p.pesoReal||0) ? 'cúbico' : 'real';
+    const tagClass = base2 === 'cúbico' ? 'tag-cubico' : 'tag-real';
+    const fmin = freteMin(pesoML); const fmax = freteMax(pesoML);
+
+    // Preço de venda vem sempre do precosSheets
+    const skuUp = p.sku.toUpperCase();
+    const precoAtual = precosSheets[skuUp] || null;
+    const safeId = skuUp.replace(/[^a-zA-Z0-9]/g, '_');
+    const emEdicao = skuEmEdicao === skuUp;
+
+    let precoCell;
+    if (emEdicao) {
+      precoCell = `<td class="right" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;">
+          <input type="number" id="preco-inp-${safeId}" value="${precoAtual || ''}" step="0.01" min="0"
+            style="font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--accent);color:var(--text);padding:4px 8px;border-radius:4px;outline:none;width:90px;"
+            onkeydown="if(event.key==='Enter')confirmarAlteracaoPreco('${skuUp}',event);if(event.key==='Escape')cancelarEdicaoPreco(event)">
+          <button class="btn btn-primary" style="padding:3px 8px;font-size:10px;" onclick="confirmarAlteracaoPreco('${skuUp}',event)">salvar</button>
+          <button class="btn" style="padding:3px 8px;font-size:10px;" onclick="cancelarEdicaoPreco(event)">✕</button>
+        </div>
+      </td>`;
+    } else if (precoAtual) {
+      precoCell = `<td class="right" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;">
+          <span style="font-family:var(--mono);font-size:12px;">R$ ${fmt(precoAtual)}</span>
+          <button class="btn" style="padding:3px 8px;font-size:10px;" onclick="alterarPreco('${skuUp}',event)">alterar</button>
+        </div>
+      </td>`;
+    } else {
+      precoCell = `<td class="right" onclick="event.stopPropagation()">
+        <button class="btn" style="padding:3px 8px;font-size:10px;" onclick="alterarPreco('${skuUp}',event)">+ preço</button>
+      </td>`;
+    }
+
+    // Frete específico pelo preço cadastrado (vem do precosSheets)
     let freCell;
-    const preco = p.precoVenda || null;
-    if (preco && preco > 0) {
-      const fe = buscarFretePorPreco(pesoML, preco);
+    if (precoAtual && precoAtual > 0) {
+      const fe = buscarFretePorPreco(pesoML, precoAtual);
       freCell = fe ? `<td class="right accent">R$ ${fmt(fe.valor)}</td>` : `<td class="right muted">—</td>`;
     } else {
       freCell = `<td class="right"><span style="font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">sem preço</span></td>`;
     }
-    const localIdx = produtos.findIndex(lp => lp.sku.toUpperCase() === p.sku.toUpperCase());
-    const editIdx = localIdx >= 0 ? localIdx : -1;
-    const isEditingPrice = editandoPrecoSku === p.sku;
-    let precoVendaCell;
-    if (isEditingPrice) {
-      precoVendaCell = `<td class="right"><input id="inline-preco-input" type="number" step="0.01" min="0" value="${p.precoVenda || ''}" style="font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--accent);color:var(--text);padding:3px 7px;border-radius:4px;width:100px;outline:none;text-align:right;" placeholder="0.00" onkeydown="if(event.key==='Enter')salvarPrecoInline();else if(event.key==='Escape'){editandoPrecoSku=null;renderTabela();}"></td>`;
-    } else {
-      precoVendaCell = p.precoVenda && p.precoVenda > 0
-        ? `<td class="right accent">R$ ${fmt(p.precoVenda)}</td>`
-        : `<td class="right muted">—</td>`;
-    }
-    const btnDetalhes = `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="editarProduto(${editIdx},'${p.sku}')">Ver detalhes</button>`;
-    const btnPreco = isEditingPrice
-      ? `<button class="btn btn-primary" style="padding:4px 10px;font-size:10px;" onclick="salvarPrecoInline()">Salvar</button>`
-      : `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="iniciarEdicaoPreco('${p.sku}')">Alterar Preço</button>`;
-    return `<tr>
+    const origemTag = p.origem === 'xlsx'
+      ? `<span class="tag tag-xlsx">xlsx</span>`
+      : `<span class="tag" style="background:var(--accent-dim);color:var(--accent);border:1px solid rgba(212,255,78,0.2);">cadastro</span>`;
+    return `<tr onclick="editarProduto('${p.sku}')">
       <td class="sku-cell">${p.sku}</td>
       <td class="dim-cell">${p.comp} × ${p.larg} × ${p.alt}</td>
       <td class="right muted">${fmt(p.pesoReal||0)} kg</td>
       <td class="right muted">${fmt(pesoML)} kg</td>
+      ${precoCell}
       ${freCell}
-      ${precoVendaCell}
-      <td class="right" style="white-space:nowrap;"><div style="display:inline-flex;gap:6px;align-items:center;">${btnDetalhes}${btnPreco}</div></td>
+      <td class="right"><span class="tag ${tagClass}">${base2}</span></td>
+      <td class="right">${origemTag}</td>
+      <td class="right"><button class="btn btn-danger" style="padding:4px 10px;font-size:10px;" onclick="event.stopPropagation();confirmarDeletar('${p.sku}')">✕</button></td>
     </tr>`;
   }).join('');
 }
 
-function editarProduto(idx, sku) {
-  if (idx >= 0) { abrirModal(idx); return; }
-  // Produto é do xlsx — pre-preenche o modal para criar versão local
-  const p = PRODUTOS_XLSX[sku];
-  if (!p) return;
-  editandoIndex = -1;
-  document.getElementById('modal-title').textContent = 'Editar produto (xlsx)';
-  document.getElementById('f-sku').value = sku;
-  document.getElementById('f-c').value = p.comp;
-  document.getElementById('f-l').value = p.larg;
-  document.getElementById('f-a').value = p.alt;
-  document.getElementById('f-peso').value = p.pesoReal || '';
-  document.getElementById('f-preco').value = '';
-  document.getElementById('btn-deletar').style.display = 'none';
+function editarProduto(sku) {
+  // Busca dados de cadastroSheets primeiro, depois PRODUTOS_XLSX como fallback
+  const skuUp = sku.toUpperCase();
+  const cad  = cadastroSheets[skuUp];
+  const xlsx = PRODUTOS_XLSX[skuUp];
+  const dados = cad || xlsx;
+  if (!dados) return;
+  editandoSku = skuUp;
+  document.getElementById('modal-title').textContent = 'Editar produto';
+  document.getElementById('f-sku').value = skuUp;
+  document.getElementById('f-c').value = dados.comp;
+  document.getElementById('f-l').value = dados.larg;
+  document.getElementById('f-a').value = dados.alt;
+  document.getElementById('f-peso').value = dados.pesoReal || '';
+  document.getElementById('f-preco').value = precosSheets[skuUp] || '';
+  document.getElementById('btn-deletar').style.display = 'inline-block';
   document.getElementById('error-msg').style.display = 'none';
   atualizarPreview();
   document.getElementById('modal-overlay').classList.add('open');
 }
 
-function confirmarDeletar(idx, sku) {
-  if (idx < 0) { toast('Produto do xlsx não pode ser deletado.'); return; }
-  if (confirm('Tem certeza que deseja deletar o produto?')) {
-    produtos.splice(idx, 1); salvarStorage(); renderTabela(); toast('Produto removido.');
+function confirmarDeletar(sku) {
+  if (confirm(`Mover ${sku} para Excluídos?\n(Para recuperar, apague a linha na aba Excluidos da planilha.)`)) {
+    excluirProdutoSheets(sku, usuarioNome);
   }
 }
 
-function iniciarEdicaoPreco(sku) {
-  editandoPrecoSku = sku;
-  renderTabela();
-  setTimeout(() => { const inp = document.getElementById('inline-preco-input'); if (inp) inp.focus(); }, 0);
-}
-
-function salvarPrecoInline() {
-  const input = document.getElementById('inline-preco-input');
-  const novoPreco = parseFloat(input ? input.value : '') || null;
-  const sku = editandoPrecoSku;
-  if (!sku) return;
-  const localIdx = produtos.findIndex(p => p.sku.toUpperCase() === sku.toUpperCase());
-  if (localIdx >= 0) {
-    produtos[localIdx].precoVenda = novoPreco;
-  } else {
-    const xlsx = PRODUTOS_XLSX[sku];
-    if (xlsx) produtos.push({ ...xlsx, sku, precoVenda: novoPreco });
-  }
-  salvarStorage();
-  editandoPrecoSku = null;
-  renderTabela();
-  toast('Preço salvo.', true);
-}
-
-function abrirModal(idx=-1) {
-  editandoIndex = idx;
+function abrirModal() {
+  editandoSku = null;
+  document.getElementById('modal-title').textContent = 'Novo produto';
+  ['f-sku','f-c','f-l','f-a','f-peso','f-preco'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('btn-deletar').style.display = 'none';
   document.getElementById('error-msg').style.display = 'none';
-  if (idx >= 0) {
-    const p = produtos[idx];
-    document.getElementById('modal-title').textContent = 'Editar produto';
-    document.getElementById('f-sku').value = p.sku;
-    document.getElementById('f-c').value = p.comp;
-    document.getElementById('f-l').value = p.larg;
-    document.getElementById('f-a').value = p.alt;
-    document.getElementById('f-peso').value = p.pesoReal || '';
-    document.getElementById('f-preco').value = p.precoVenda || '';
-    document.getElementById('btn-deletar').style.display = 'inline-block';
-  } else {
-    document.getElementById('modal-title').textContent = 'Novo produto';
-    ['f-sku','f-c','f-l','f-a','f-peso','f-preco'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('btn-deletar').style.display = 'none';
-  }
   atualizarPreview();
   document.getElementById('modal-overlay').classList.add('open');
   document.getElementById('f-sku').focus();
 }
 
-function fecharModal() { document.getElementById('modal-overlay').classList.remove('open'); editandoIndex = -1; }
+function fecharModal() { document.getElementById('modal-overlay').classList.remove('open'); editandoSku = null; }
 function fecharModalOverlay(e) { if (e.target === document.getElementById('modal-overlay')) fecharModal(); }
 
 function atualizarPreview() {
@@ -720,32 +964,42 @@ function salvarProduto() {
   const pr = parseFloat(document.getElementById('f-peso').value) || 0;
   const pv = parseFloat(document.getElementById('f-preco').value) || null;
   if (!sku||!c||!l||!a) { document.getElementById('error-msg').style.display='block'; return; }
-  const prod = { sku, comp:c, larg:l, alt:a, pesoReal:pr||null, precoVenda: pv };
-  if (editandoIndex >= 0) { produtos[editandoIndex] = prod; toast('Atualizado.', true); }
-  else { produtos.push(prod); toast('Salvo.', true); }
-  salvarStorage(); fecharModal(); renderTabela();
+  fecharModal();
+  // Dimensões/peso → aba Cadastro no Sheets
+  salvarCadastroSheets(sku, c, l, a, pr||null, usuarioNome);
+  // Preço de venda → aba Produtos no Sheets (se informado)
+  if (pv && pv > 0 && accessToken) salvarPrecoSheets(sku, pv, usuarioNome);
 }
 
 function deletarProduto() {
-  if (editandoIndex < 0) return;
-  confirmarDeletar(editandoIndex, produtos[editandoIndex].sku);
+  if (!editandoSku) return;
+  const sku = editandoSku;
   fecharModal();
+  confirmarDeletar(sku);
 }
 
 function exportCSV() {
-  const xlsxList = Object.entries(PRODUTOS_XLSX).map(([sku, d]) => ({ ...d, sku, origem: 'xlsx' }));
-  const localSkus = new Set(produtos.map(p => p.sku.toUpperCase()));
-  const base = [
-    ...xlsxList.filter(p => !localSkus.has(p.sku)),
-    ...produtos.map(p => ({ ...p, origem: 'local' }))
-  ].sort((a,b) => a.sku.localeCompare(b.sku));
+  // Mesma fonte que renderTabela: PRODUTOS_XLSX + cadastroSheets, filtrado por excluidosSheets
+  const todosSkus = [...new Set([
+    ...Object.keys(PRODUTOS_XLSX).map(s => s.toUpperCase()),
+    ...Object.keys(cadastroSheets)
+  ])];
+  const base = todosSkus
+    .filter(sku => !excluidosSheets.has(sku))
+    .map(sku => {
+      const cad  = cadastroSheets[sku];
+      const xlsx = PRODUTOS_XLSX[sku];
+      const dados = cad || xlsx;
+      return { ...dados, sku, origem: cad ? 'cadastro' : 'xlsx' };
+    })
+    .sort((a, b) => a.sku.localeCompare(b.sku));
 
   const header = 'SKU,Comp,Larg,Alt,Peso Real,Peso ML,Preco Venda,Frete Especifico,Frete max,Base,Origem';
   const linhas = base.map(p => {
     const pm = calcularPesoML(p);
     const cub = (p.comp*p.larg*p.alt)/6000;
     const base2 = cub >= (p.pesoReal||0) ? 'cubico' : 'real';
-    const pv = p.precoVenda || '';
+    const pv = precosSheets[p.sku] || '';
     const fe = pv ? buscarFretePorPreco(pm, pv) : null;
     return [p.sku,p.comp,p.larg,p.alt,p.pesoReal||0,fmt(pm),pv,fe?fmt(fe.valor):'',fmt(freteMax(pm)),base2,p.origem].join(',');
   });
@@ -770,20 +1024,14 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') fecharModal();
 });
 
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-mode');
-  localStorage.setItem('tema', isLight ? 'light' : 'dark');
-  atualizarIconeTema();
-}
-
-function atualizarIconeTema() {
-  document.getElementById('theme-toggle').textContent =
-    document.body.classList.contains('light-mode') ? '🌙 Modo escuro' : '☀️ Modo claro';
-}
-
-carregar();
-atualizarIconeTema();
-renderTabela();
+// Tenta inicializar o GIS assim que a lib estiver disponível
+(function tentarInitGSI() {
+  if (typeof google !== 'undefined' && google.accounts) {
+    initGoogleAuth();
+  } else {
+    setTimeout(tentarInitGSI, 200);
+  }
+})();
 </script>
 </body>
 </html>
