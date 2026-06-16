@@ -335,7 +335,7 @@ function fazerLogin() {
   if (!tokenClient) {
     try { initGoogleAuth(); } catch(e) { toast('Aguarde o carregamento do Google.'); return; }
   }
-  tokenClient.requestToken();
+  tokenClient.requestAccessToken();
 }
 
 function fazerLogout() {
