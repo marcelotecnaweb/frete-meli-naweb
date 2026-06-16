@@ -37,12 +37,14 @@
   body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; padding: 24px; }
 
   /* LOGIN */
-  #login-overlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 1000; align-items: center; justify-content: center; }
+  #login-overlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
   #login-overlay.visible { display: flex; }
   .login-box { background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; padding: 40px 48px; text-align: center; max-width: 360px; width: 100%; }
   .login-box img { width: 60px; margin: 0 auto 18px; opacity: 0.85; display: block; }
   .login-box h2 { font-family: var(--mono); font-size: 15px; font-weight: 500; margin-bottom: 6px; }
   .login-box p { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-bottom: 24px; }
+  #one-tap-area { display: flex; justify-content: center; margin-bottom: 12px; min-height: 44px; }
+  .login-divider { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 12px; letter-spacing: 0.05em; }
   #gsi-btn-wrap { display: flex; justify-content: center; }
   .login-error { font-family: var(--mono); font-size: 11px; color: var(--red); margin-top: 12px; display: none; }
 
@@ -164,6 +166,10 @@
     <img src="logo2-cfn.png" alt="">
     <h2>Calculadora de Frete ML</h2>
     <p id="login-status">Faça login com sua conta Google para continuar</p>
+    <!-- One Tap renderiza aqui automaticamente -->
+    <div id="one-tap-area"></div>
+    <div class="login-divider" id="login-divider" style="display:none;">ou</div>
+    <!-- Botão manual (fallback caso One Tap não apareça) -->
     <div id="gsi-btn-wrap"></div>
     <div class="login-error" id="login-error">Erro ao fazer login. Tente novamente.</div>
   </div>
@@ -177,7 +183,6 @@
     <span class="badge">2026</span>
   </div>
   <div class="header-right">
-    <!-- tema agora fica aqui no header, sem position:fixed -->
     <button class="btn" id="theme-toggle" onclick="toggleTheme()">☀️ Modo escuro</button>
     <span class="user-info" id="user-info"></span>
     <button class="btn" onclick="fazerLogout()">sair</button>
@@ -285,10 +290,8 @@
 // ============================================================
 // CONFIG
 // ============================================================
-const CLIENT_ID  = '327580333878-ubsdn6929vejccckeic0kihn9fvqi5ab.apps.googleusercontent.com';
-const SHEETS_ID  = '1cQb4EEQq5W2b0jgG_DDesDPoundNpz3sR78DYqisSaM';
-const SESSION_KEY = 'cfn_session';       // chave no localStorage
-const SESSION_TTL = 7 * 24 * 60 * 60 * 1000; // 7 dias em ms
+const CLIENT_ID = '327580333878-ubsdn6929vejccckeic0kihn9fvqi5ab.apps.googleusercontent.com';
+const SHEETS_ID = '1cQb4EEQq5W2b0jgG_DDesDPoundNpz3sR78DYqisSaM';
 
 // ============================================================
 // TABELAS DE FRETE
@@ -301,117 +304,125 @@ const PRODUTOS_XLSX={"ALMO-01":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35},"AL
 // ============================================================
 // ESTADO GLOBAL
 // ============================================================
-let accessToken  = null;
-let usuarioNome  = null;
+let accessToken = null;
+let usuarioNome = null;
 let precosSheets = {};
 let cadastroSheets = {};
 let excluidosSheets = new Set();
-let editandoSku  = null;
+let editandoSku = null;
 let editandoPrecoSku = null;
-let tokenClient  = null;   // referência ao client GIS para renovação silenciosa
-let renovacaoTimer = null; // timer para renovar token antes de expirar
 
 // ============================================================
-// SESSÃO PERSISTENTE (localStorage, 7 dias)
-// ============================================================
-function salvarSessao(nome) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ nome, ts: Date.now() }));
-}
-function carregarSessao() {
-  try {
-    const s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-    if (!s) return null;
-    if (Date.now() - s.ts > SESSION_TTL) { localStorage.removeItem(SESSION_KEY); return null; }
-    return s;
-  } catch(e) { return null; }
-}
-function limparSessao() { localStorage.removeItem(SESSION_KEY); }
-
-// ============================================================
-// GOOGLE IDENTITY SERVICES
+// AUTENTICAÇÃO — Google One Tap + fallback manual
 // ============================================================
 function initGSI() {
   if (typeof google === 'undefined') { setTimeout(initGSI, 200); return; }
 
-  // Cria o token client (reutilizado para login e renovação)
-  tokenClient = google.accounts.oauth2.initTokenClient({
+  // One Tap: autentica automaticamente se o usuário já esteve logado
+  // O Google gerencia a sessão do lado dele — funciona no F5 e ao fechar/reabrir
+  google.accounts.id.initialize({
     client_id: CLIENT_ID,
-    scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile',
-    // callback vazio aqui — substituído dinamicamente em cada chamada
-    callback: () => {},
+    callback: onOneTapCredential,
+    auto_select: true,           // seleciona automaticamente se houver só 1 conta
+    cancel_on_tap_outside: false, // não cancela se clicar fora
   });
 
-  // Renderiza o botão de login
+  // Renderiza o One Tap (aparece no canto ou dentro da login-box)
+  google.accounts.id.renderButton(
+    document.getElementById('one-tap-area'),
+    {
+      theme: 'outline',
+      size: 'large',
+      width: 260,
+      text: 'continue_with',
+      logo_alignment: 'left',
+    }
+  );
+
+  // Dispara o One Tap automático (popup flutuante se já logado)
+  google.accounts.id.prompt((notification) => {
+    // Se o One Tap não exibir (usuário desativou, browser bloqueou, etc.)
+    // mostra o botão manual como fallback
+    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      mostrarBotaoManual();
+    }
+  });
+}
+
+// Callback do One Tap — recebe id_token (JWT)
+// Precisamos trocar por access_token para chamar a Sheets API
+async function onOneTapCredential(credentialResponse) {
+  // Decodifica o JWT para pegar o nome (sem verificação — só leitura de payload)
+  try {
+    const payload = JSON.parse(atob(credentialResponse.credential.split('.')[1]));
+    usuarioNome = payload.given_name || payload.name || 'Usuário';
+  } catch(e) {
+    usuarioNome = 'Usuário';
+  }
+
+  // Com o id_token em mãos, pedimos o access_token via token client
+  // sem popup (hint = sub do usuário autenticado)
+  const tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/spreadsheets',
+    prompt: '',  // sem popup pois já autenticou via One Tap
+    callback: async (resp) => {
+      if (resp.error || !resp.access_token) {
+        mostrarBotaoManual();
+        return;
+      }
+      accessToken = resp.access_token;
+      await entrarNoApp();
+    },
+  });
+  tokenClient.requestAccessToken();
+}
+
+// Botão manual: fallback quando One Tap não funciona
+function mostrarBotaoManual() {
+  document.getElementById('login-divider').style.display = 'block';
   const wrap = document.getElementById('gsi-btn-wrap');
   wrap.innerHTML = '';
   const btn = document.createElement('button');
   btn.className = 'btn btn-primary';
   btn.style.cssText = 'display:inline-flex;align-items:center;gap:10px;padding:10px 20px;font-size:12px;';
   btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Entrar com Google`;
-  btn.onclick = fazerLogin;
+  btn.onclick = loginManual;
   wrap.appendChild(btn);
-
-  // Tenta restaurar sessão salva sem pedir login
-  const sessao = carregarSessao();
-  if (sessao) {
-    usuarioNome = sessao.nome;
-    document.getElementById('login-status').textContent = 'Reconectando...';
-    renovarTokenSilencioso(); // obtém novo access_token sem popup
-  }
 }
 
-window.addEventListener('load', initGSI);
-
-// Login manual (abre seletor de conta)
-function fazerLogin() {
+// Login manual explícito (abre seletor de conta)
+function loginManual() {
   document.getElementById('login-error').style.display = 'none';
   document.getElementById('login-status').textContent = 'Abrindo login...';
-  tokenClient.callback = async (resp) => {
-    if (resp.error) {
-      document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-status').textContent = 'Faça login com sua conta Google para continuar';
-      return;
-    }
-    accessToken = resp.access_token;
-    agendarRenovacao(resp.expires_in || 3600);
-    await posLogin(true); // true = buscar nome na API
-  };
-  tokenClient.requestAccessToken({ prompt: 'select_account' });
+  const tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile',
+    prompt: 'select_account',
+    callback: async (resp) => {
+      if (resp.error || !resp.access_token) {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-status').textContent = 'Faça login com sua conta Google para continuar';
+        return;
+      }
+      accessToken = resp.access_token;
+      // Busca nome via userinfo
+      try {
+        const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: 'Bearer ' + accessToken }
+        });
+        const info = await res.json();
+        usuarioNome = info.given_name || info.name || 'Usuário';
+      } catch(e) { usuarioNome = 'Usuário'; }
+      await entrarNoApp();
+    },
+  });
+  tokenClient.requestAccessToken();
 }
 
-// Renovação silenciosa — sem popup, sem interação
-function renovarTokenSilencioso() {
-  tokenClient.callback = async (resp) => {
-    if (resp.error || !resp.access_token) {
-      // Falhou silenciosamente → pede login manual
-      mostrarLoginOverlay();
-      return;
-    }
-    accessToken = resp.access_token;
-    agendarRenovacao(resp.expires_in || 3600);
-    await posLogin(false); // false = usa nome da sessão salva
-  };
-  // prompt:'' = sem popup; usa grant existente do Google
-  tokenClient.requestAccessToken({ prompt: '' });
-}
-
-// Agenda renovação automática 5 min antes de expirar
-function agendarRenovacao(expiresInSeg) {
-  clearTimeout(renovacaoTimer);
-  const msAntesDeExpirar = Math.max((expiresInSeg - 300) * 1000, 60000);
-  renovacaoTimer = setTimeout(renovarTokenSilencioso, msAntesDeExpirar);
-}
-
-async function posLogin(buscarNome) {
+async function entrarNoApp() {
   try {
-    if (buscarNome) {
-      const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: { Authorization: 'Bearer ' + accessToken }
-      });
-      const info = await res.json();
-      usuarioNome = info.given_name || info.name || 'Usuário';
-    }
-    salvarSessao(usuarioNome);
+    document.getElementById('login-status').textContent = 'Carregando dados...';
     document.getElementById('user-info').textContent = usuarioNome;
     await inicializarSheets();
     document.getElementById('login-overlay').classList.remove('visible');
@@ -419,31 +430,29 @@ async function posLogin(buscarNome) {
     renderTabela();
   } catch(e) {
     console.error(e);
-    mostrarLoginOverlay();
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('login-status').textContent = 'Faça login com sua conta Google para continuar';
   }
 }
 
-function mostrarLoginOverlay() {
-  document.getElementById('login-status').textContent = 'Faça login com sua conta Google para continuar';
-  document.getElementById('login-overlay').classList.add('visible');
-  document.getElementById('main-content').style.display = 'none';
-}
-
 function fazerLogout() {
-  clearTimeout(renovacaoTimer);
-  limparSessao();
-  if (accessToken) { try { google.accounts.oauth2.revoke(accessToken, ()=>{}); } catch(e){} }
+  google.accounts.id.disableAutoSelect(); // impede One Tap automático após logout explícito
   accessToken = null; usuarioNome = null;
   precosSheets = {}; cadastroSheets = {}; excluidosSheets = new Set();
+  document.getElementById('main-content').style.display = 'none';
+  document.getElementById('login-status').textContent = 'Faça login com sua conta Google para continuar';
   document.getElementById('login-error').style.display = 'none';
-  mostrarLoginOverlay();
+  document.getElementById('login-overlay').classList.add('visible');
+  // Reinicia o One Tap para mostrar o seletor de conta
+  google.accounts.id.prompt();
 }
+
+window.addEventListener('load', initGSI);
 
 // ============================================================
 // SHEETS API
 // ============================================================
 function enc(s) { return encodeURIComponent(s); }
-
 async function sheetsReq(path, method='GET', body=null) {
   const url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEETS_ID + path;
   const opts = { method, headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' } };
@@ -452,7 +461,6 @@ async function sheetsReq(path, method='GET', body=null) {
   if (!res.ok) throw new Error('Sheets ' + res.status + ': ' + await res.text());
   return res.json();
 }
-
 async function garantirAba(nome, headers) {
   const meta = await sheetsReq('');
   if (!meta.sheets.some(s => s.properties.title === nome)) {
@@ -460,7 +468,6 @@ async function garantirAba(nome, headers) {
     await sheetsReq('/values/' + enc(nome + '!A1') + ':append?valueInputOption=RAW', 'POST', { values: [headers] });
   }
 }
-
 async function inicializarSheets() {
   await garantirAba('Produtos',  ['SKU','PrecoVenda']);
   await garantirAba('Historico', ['DataHora','Usuario','SKU','PrecoAnterior','PrecoNovo']);
@@ -468,7 +475,6 @@ async function inicializarSheets() {
   await garantirAba('Excluidos', ['SKU','ExcluidoPor','DataHora']);
   await Promise.all([carregarPrecos(), carregarCadastro(), carregarExcluidos()]);
 }
-
 async function carregarPrecos() {
   const res = await sheetsReq('/values/' + enc('Produtos!A:B'));
   const rows = res.values || []; precosSheets = {};
@@ -484,7 +490,6 @@ async function carregarExcluidos() {
   const rows = res.values || []; excluidosSheets = new Set();
   for (let i=1;i<rows.length;i++) { const s=(rows[i][0]||'').trim().toUpperCase(); if(s) excluidosSheets.add(s); }
 }
-
 async function salvarPrecoSheets(sku, novo, anterior) {
   sku = sku.toUpperCase();
   const res = await sheetsReq('/values/' + enc('Produtos!A:A'));
@@ -497,7 +502,6 @@ async function salvarPrecoSheets(sku, novo, anterior) {
   await sheetsReq('/values/'+enc('Historico!A:E')+':append?valueInputOption=RAW','POST',{values:[[agora,usuarioNome,sku,anterior!==null?anterior:'',val]]});
   precosSheets[sku]=novo;
 }
-
 async function salvarCadastroSheets(sku,comp,larg,alt,pesoReal) {
   sku=sku.toUpperCase();
   const res=await sheetsReq('/values/'+enc('Cadastro!A:A'));
@@ -509,7 +513,6 @@ async function salvarCadastroSheets(sku,comp,larg,alt,pesoReal) {
   else await sheetsReq('/values/'+enc('Cadastro!A:G')+':append?valueInputOption=RAW','POST',{values:[linha]});
   cadastroSheets[sku]={comp,larg,alt,pesoReal};
 }
-
 async function excluirProdutoSheets(sku) {
   sku=sku.toUpperCase();
   const agora=new Date().toLocaleString('pt-BR');
@@ -542,21 +545,17 @@ function switchTab(name){document.querySelectorAll('.tab').forEach(t=>t.classLis
 // ============================================================
 const FAIXAS=[[0.3,'Até 0,3 kg'],[0.5,'De 0,3 a 0,5 kg'],[1,'De 0,5 a 1 kg'],[1.5,'De 1 a 1,5 kg'],[2,'De 1,5 a 2 kg'],[3,'De 2 a 3 kg'],[4,'De 3 a 4 kg'],[5,'De 4 a 5 kg'],[6,'De 5 a 6 kg'],[7,'De 6 a 7 kg'],[8,'De 7 a 8 kg'],[9,'De 8 a 9 kg'],[11,'De 9 a 11 kg'],[13,'De 11 a 13 kg'],[15,'De 13 a 15 kg'],[17,'De 15 a 17 kg'],[20,'De 17 a 20 kg'],[25,'De 20 a 25 kg'],[30,'De 25 a 30 kg'],[40,'De 30 a 40 kg'],[50,'De 40 a 50 kg'],[60,'De 50 a 60 kg'],[70,'De 60 a 70 kg'],[80,'De 70 a 80 kg'],[90,'De 80 a 90 kg'],[100,'De 90 a 100 kg'],[125,'De 100 a 125 kg'],[150,'De 125 a 150 kg'],[99999,'Mais de 150 kg']];
 function faixaLabel(kg){const f=FAIXAS.find(r=>kg<=r[0]);return f?f[1]:'Mais de 150 kg';}
-
 function renderEmptyConsulta(){const todos=listarTodos(),com=todos.filter(p=>p.precoVenda&&p.precoVenda>0).length,sem=todos.length-com;document.getElementById('sku-resultado').innerHTML=`<div style="text-align:center;padding:48px 0;"><img src="logo2-cfn.png" alt="" style="width:72px;opacity:0.55;display:block;margin:0 auto 20px;"><div style="font-family:var(--mono);font-size:14px;color:var(--text2);margin-bottom:28px;">Digite um SKU para calcular o frete</div><div style="display:inline-flex;gap:32px;"><div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><span style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--accent-text);">${com}</span><span style="font-family:var(--mono);font-size:11px;color:var(--text3);">com preço cadastrado</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><a href="#" onclick="event.preventDefault();switchTab('produtos');" style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--red);text-decoration:none;">${sem}</a><span style="font-family:var(--mono);font-size:11px;color:var(--text3);">sem preço cadastrado</span></div></div></div>`;}
-
 function consultarSKU(){const q=document.getElementById('sku-input').value.trim().toUpperCase();const div=document.getElementById('sku-resultado');const simRow=document.getElementById('simular-preco-row');if(!q){simRow.style.display='none';renderEmptyConsulta();return;}const p=getProduto(q);if(p){simRow.style.display='block';renderResultadoSKU(p,div);}else{simRow.style.display='none';const sugs=listarTodos().map(x=>x.sku).filter(s=>s.includes(q)).slice(0,8);div.innerHTML=`<div class="sku-not-found">SKU não encontrado: <strong>${q}</strong>${sugs.length?'<div class="sugestoes">'+sugs.map(s=>`<span class="sug-item" onclick="selecionarSug('${s}')">${s}</span>`).join('')+'</div>':''}</div>`;}}
 function selecionarSug(sku){document.getElementById('sku-input').value=sku;consultarSKU();}
-
 function renderResultadoSKU(p,div){const pm=calcPesoML(p),cub=(p.comp*p.larg*p.alt)/6000,f=buscarFrete(pm),base=cub>=(p.pesoReal||0)?'cúbico':'real';const sim=parseFloat(document.getElementById('simular-preco-input').value)||0,precoAtivo=sim>0?sim:(p.precoVenda||0),fe=precoAtivo>0?buscarFretePorPreco(pm,precoAtivo):null,idx=fe?fe.idx:-1;const cols=[{l:'R$ 0–18,99',v:f.r0_18},{l:'R$ 19–48,99',v:f.r19_48},{l:'R$ 49–78,99',v:f.r49_78},{l:'R$ 79–99,99',v:f.r79_99},{l:'R$ 100–119,99',v:f.r100_119},{l:'R$ 120–149,99',v:f.r120_149},{l:'R$ 150–199,99',v:f.r150_199},{l:'R$ 200+',v:f.r200}];const badge=precoAtivo>0?`<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;background:var(--accent-dim2);color:var(--accent-text);border:1px solid var(--accent-dim2);">R$ ${fmt(precoAtivo)} (${sim>0?'simulado':'cadastrado'})</span>`:'';div.innerHTML=`<div class="sku-result"><div class="sku-header"><span class="sku-name">${p.sku}</span><span class="tag tag-xlsx">${p.origem}</span>${badge}</div><div class="sku-pesos"><div class="sku-peso-item"><span class="sku-peso-label">Dimensões</span><span class="sku-peso-val">${p.comp} × ${p.larg} × ${p.alt} cm</span></div><div class="sku-peso-item"><span class="sku-peso-label">Peso real</span><span class="sku-peso-val">${fmt(p.pesoReal)} kg</span></div><div class="sku-peso-item"><span class="sku-peso-label">Peso cúbico</span><span class="sku-peso-val">${fmt(cub)} kg</span></div><div class="sku-peso-item"><span class="sku-peso-label">Faixa ML (${base})</span><span class="sku-peso-val" style="color:var(--accent-text);font-weight:500;">${faixaLabel(pm)}</span></div></div><div class="faixas-title">frete por faixa de preço de venda${idx>=0?' — card destacado é o ativo':''}</div><div class="faixas-grid">${cols.map((c,i)=>{let cl='faixa-card';if(idx>=0)cl+=i===idx?' destacado':' apagado';return`<div class="${cl}"><div class="faixa-card-preco">${c.l}</div><div class="faixa-card-valor">R$ ${fmt(c.v)}</div></div>`;}).join('')}</div></div>`;}
 
 // ============================================================
 // TABELA
 // ============================================================
 function renderTabela(){const q=(document.getElementById('search').value||'').toLowerCase();const lista=listarTodos().filter(p=>p.sku.toLowerCase().includes(q));document.getElementById('count-label').textContent=lista.length===1?'1 produto':`${lista.length} produtos`;const empty=document.getElementById('empty-state');if(!lista.length){document.getElementById('tbody').innerHTML='';empty.style.display='block';return;}empty.style.display='none';document.getElementById('tbody').innerHTML=lista.map(p=>{const pm=calcPesoML(p),preco=p.precoVenda;let freCell=preco&&preco>0?(()=>{const fe=buscarFretePorPreco(pm,preco);return fe?`<td class="right accent">R$ ${fmt(fe.valor)}</td>`:`<td class="right muted">—</td>`;})():`<td class="right"><span style="font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">sem preço</span></td>`;const editing=editandoPrecoSku===p.sku;const precoCell=editing?`<td class="right"><input id="inline-preco-input" type="number" step="0.01" min="0" value="${preco||''}" style="font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--accent);color:var(--text);padding:3px 7px;border-radius:4px;width:100px;outline:none;text-align:right;" onkeydown="if(event.key==='Enter')salvarPrecoInline();else if(event.key==='Escape'){editandoPrecoSku=null;renderTabela();}"></td>`:(preco&&preco>0?`<td class="right accent">R$ ${fmt(preco)}</td>`:`<td class="right muted">—</td>`);const btnDet=`<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="abrirModalEdicao('${p.sku}')">Ver detalhes</button>`;const btnPreco=editing?`<button class="btn btn-primary" style="padding:4px 10px;font-size:10px;" onclick="salvarPrecoInline()">Salvar</button>`:`<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="iniciarEdicaoPreco('${p.sku}')">Alterar Preço</button>`;return`<tr><td class="sku-cell">${p.sku}</td><td class="dim-cell">${p.comp} × ${p.larg} × ${p.alt}</td><td class="right muted">${fmt(p.pesoReal)} kg</td><td class="right muted">${fmt(pm)} kg</td>${freCell}${precoCell}<td class="right" style="white-space:nowrap;"><div style="display:inline-flex;gap:6px;">${btnDet}${btnPreco}</div></td></tr>`;}).join('');}
-
 function iniciarEdicaoPreco(sku){editandoPrecoSku=sku;renderTabela();setTimeout(()=>{const i=document.getElementById('inline-preco-input');if(i)i.focus();},0);}
-async function salvarPrecoInline(){const input=document.getElementById('inline-preco-input');const novo=parseFloat(input?input.value:'')||null;const sku=editandoPrecoSku;if(!sku)return;const anterior=precosSheets[sku]||null;editandoPrecoSku=null;setSaving(true);try{await salvarPrecoSheets(sku,novo,anterior);renderTabela();toast('Preço salvo.',true);}catch(e){toast('Erro ao salvar.',false,true);console.error(e);}finally{setSaving(false);}};
+async function salvarPrecoInline(){const input=document.getElementById('inline-preco-input');const novo=parseFloat(input?input.value:'')||null;const sku=editandoPrecoSku;if(!sku)return;const anterior=precosSheets[sku]||null;editandoPrecoSku=null;setSaving(true);try{await salvarPrecoSheets(sku,novo,anterior);renderTabela();toast('Preço salvo.',true);}catch(e){toast('Erro ao salvar.',false,true);console.error(e);}finally{setSaving(false);}}
 
 // ============================================================
 // MODAL
@@ -566,8 +565,8 @@ function abrirModalEdicao(sku){const p=getProduto(sku);if(!p)return;editandoSku=
 function fecharModal(){document.getElementById('modal-overlay').classList.remove('open');editandoSku=null;}
 function fecharModalOverlay(e){if(e.target===document.getElementById('modal-overlay'))fecharModal();}
 function atualizarPreview(){const c=parseFloat(document.getElementById('f-c').value),l=parseFloat(document.getElementById('f-l').value),a=parseFloat(document.getElementById('f-a').value),pr=parseFloat(document.getElementById('f-peso').value)||0,pv=parseFloat(document.getElementById('f-preco').value)||0;if(!c||!l||!a){['prev-cubico','prev-pesoml','prev-frete-especifico','prev-frete-max'].forEach(id=>document.getElementById(id).textContent='—');document.getElementById('prev-frete-sub').textContent='cadastre preço';return;}const cub=(c*l*a)/6000,pm=Math.max(cub,pr);document.getElementById('prev-cubico').textContent=fmt(cub);document.getElementById('prev-pesoml').textContent=fmt(pm);document.getElementById('prev-frete-max').textContent=freteMax(pm)?'R$ '+fmt(freteMax(pm)):'—';if(pv>0){const fe=buscarFretePorPreco(pm,pv);document.getElementById('prev-frete-especifico').textContent=fe?'R$ '+fmt(fe.valor):'—';document.getElementById('prev-frete-sub').textContent='R$ '+fmt(pv)+' p.venda';}else{document.getElementById('prev-frete-especifico').textContent='—';document.getElementById('prev-frete-sub').textContent='cadastre preço';}}
-async function salvarProduto(){const sku=editandoSku||document.getElementById('f-sku').value.trim().toUpperCase();const c=parseFloat(document.getElementById('f-c').value),l=parseFloat(document.getElementById('f-l').value),a=parseFloat(document.getElementById('f-a').value),pr=parseFloat(document.getElementById('f-peso').value)||0,pv=parseFloat(document.getElementById('f-preco').value)||null;if(!sku||!c||!l||!a){document.getElementById('error-msg').style.display='block';return;}fecharModal();setSaving(true);try{await salvarCadastroSheets(sku,c,l,a,pr);if(pv!==null)await salvarPrecoSheets(sku,pv,precosSheets[sku]||null);renderTabela();toast('Produto salvo.',true);}catch(e){toast('Erro ao salvar.',false,true);console.error(e);}finally{setSaving(false);}};
-async function deletarProduto(){if(!editandoSku)return;if(!confirm('Tem certeza que deseja deletar o produto?'))return;const sku=editandoSku;fecharModal();setSaving(true);try{await excluirProdutoSheets(sku);renderTabela();toast('Produto removido.',true);}catch(e){toast('Erro ao remover.',false,true);console.error(e);}finally{setSaving(false);}};
+async function salvarProduto(){const sku=editandoSku||document.getElementById('f-sku').value.trim().toUpperCase();const c=parseFloat(document.getElementById('f-c').value),l=parseFloat(document.getElementById('f-l').value),a=parseFloat(document.getElementById('f-a').value),pr=parseFloat(document.getElementById('f-peso').value)||0,pv=parseFloat(document.getElementById('f-preco').value)||null;if(!sku||!c||!l||!a){document.getElementById('error-msg').style.display='block';return;}fecharModal();setSaving(true);try{await salvarCadastroSheets(sku,c,l,a,pr);if(pv!==null)await salvarPrecoSheets(sku,pv,precosSheets[sku]||null);renderTabela();toast('Produto salvo.',true);}catch(e){toast('Erro ao salvar.',false,true);console.error(e);}finally{setSaving(false);}}
+async function deletarProduto(){if(!editandoSku)return;if(!confirm('Tem certeza que deseja deletar o produto?'))return;const sku=editandoSku;fecharModal();setSaving(true);try{await excluirProdutoSheets(sku);renderTabela();toast('Produto removido.',true);}catch(e){toast('Erro ao remover.',false,true);console.error(e);}finally{setSaving(false);}}
 
 // ============================================================
 // CSV
