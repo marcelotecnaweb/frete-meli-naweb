@@ -270,9 +270,11 @@
 // ============================================================
 // CONFIG
 // ============================================================
-const CLIENT_ID = '327580333878-ubsdn6929vejccckeic0kihn9fvqi5ab.apps.googleusercontent.com';
-const SHEETS_ID = '1cQb4EEQq5W2b0jgG_DDesDPoundNpz3sR78DYqisSaM';
-const SCOPES    = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile';
+const CLIENT_ID  = '327580333878-ubsdn6929vejccckeic0kihn9fvqi5ab.apps.googleusercontent.com';
+const SHEETS_ID  = '1cQb4EEQq5W2b0jgG_DDesDPoundNpz3sR78DYqisSaM';
+const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile';
+const TOKEN_KEY  = 'cfn_token';   // chave no localStorage
+const TOKEN_TTL  = 55 * 60 * 1000; // 55 min em ms (token do Google dura 1h, renovamos antes)
 
 // ============================================================
 // TABELAS DE FRETE
@@ -291,27 +293,63 @@ let cadastroSheets = {};
 let excluidosSheets = new Set();
 let editandoSku = null;
 let editandoPrecoSku = null;
-
-// ============================================================
-// AUTENTICAÇÃO
-// Estratégia: único token client com todos os scopes necessários.
-// O initTokenClient com prompt:'select_account' abre o seletor
-// de conta do Google e pede os scopes de uma vez só.
-// Nas próximas visitas, como o Google já tem o grant salvo,
-// podemos pedir sem prompt (prompt:'') — sem popup.
-// ============================================================
 let tokenClient = null;
+let renovacaoTimer = null;
 
+// ============================================================
+// PERSISTÊNCIA DO TOKEN (localStorage, 55 min)
+// Salva o access_token com timestamp. No F5 ou recarregamento,
+// lê o token salvo — se ainda válido, entra direto sem tocar
+// no Google. Se expirou, pede novo token silenciosamente.
+// ============================================================
+function salvarToken(token, nome) {
+  localStorage.setItem(TOKEN_KEY, JSON.stringify({ token, nome, ts: Date.now() }));
+}
+function carregarToken() {
+  try {
+    const d = JSON.parse(localStorage.getItem(TOKEN_KEY) || 'null');
+    if (!d) return null;
+    if (Date.now() - d.ts > TOKEN_TTL) { localStorage.removeItem(TOKEN_KEY); return null; }
+    return d;
+  } catch(e) { return null; }
+}
+function limparToken() { localStorage.removeItem(TOKEN_KEY); }
+
+// Agenda renovação automática 5 min antes do token expirar
+function agendarRenovacao() {
+  clearTimeout(renovacaoTimer);
+  // Renova aos 50 min (10 min antes do TTL de 1h do Google)
+  renovacaoTimer = setTimeout(renovarTokenSilencioso, 50 * 60 * 1000);
+}
+
+function renovarTokenSilencioso() {
+  if (!tokenClient) return;
+  tokenClient.callback = async (resp) => {
+    if (resp.error || !resp.access_token) {
+      // Renovação silenciosa falhou — não incomoda o usuário ainda,
+      // só na próxima ação que precisar do token vai dar erro
+      return;
+    }
+    accessToken = resp.access_token;
+    salvarToken(accessToken, usuarioNome);
+    agendarRenovacao();
+  };
+  tokenClient.requestAccessToken({ prompt: '' });
+}
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
 function initGSI() {
   if (typeof google === 'undefined') { setTimeout(initGSI, 200); return; }
 
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: SCOPES,
-    callback: '', // definido dinamicamente abaixo
+    callback: '', // definido dinamicamente
   });
 
-  // Renderiza botão estilizado
+  // Renderiza botão de login
   const wrap = document.getElementById('gsi-btn-wrap');
   wrap.innerHTML = '';
   const btn = document.createElement('button');
@@ -321,29 +359,23 @@ function initGSI() {
   btn.onclick = fazerLogin;
   wrap.appendChild(btn);
 
-  // Tenta login silencioso (sem popup) se o Google já tem o grant
-  tentarLoginSilencioso();
+  // Tenta restaurar sessão do localStorage
+  const salvo = carregarToken();
+  if (salvo) {
+    // Token ainda válido — entra direto sem abrir nada
+    accessToken = salvo.token;
+    usuarioNome = salvo.nome;
+    agendarRenovacao();
+    entrarNoApp();
+  }
+  // Se não tem token salvo, mostra a tela de login normalmente
 }
 
 window.addEventListener('load', initGSI);
 
-// Login silencioso: sem prompt, sem popup.
-// Funciona quando o usuário já autorizou os scopes antes.
-function tentarLoginSilencioso() {
-  tokenClient.callback = async (resp) => {
-    if (resp.error || !resp.access_token) {
-      // Silencioso falhou — mostra a tela de login normalmente
-      // O usuário vai clicar no botão para fazer login manual
-      return;
-    }
-    accessToken = resp.access_token;
-    await posLogin();
-  };
-  // prompt vazio = silencioso, sem interação do usuário
-  tokenClient.requestAccessToken({ prompt: '' });
-}
-
-// Login manual: abre o seletor de conta do Google
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
 function fazerLogin() {
   document.getElementById('login-error').style.display = 'none';
   document.getElementById('login-status').textContent = 'Aguarde...';
@@ -354,21 +386,24 @@ function fazerLogin() {
       return;
     }
     accessToken = resp.access_token;
-    await posLogin();
+    // Busca nome do usuário
+    try {
+      const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: 'Bearer ' + accessToken }
+      });
+      const info = await res.json();
+      usuarioNome = info.given_name || info.name || 'Usuário';
+    } catch(e) { usuarioNome = 'Usuário'; }
+    salvarToken(accessToken, usuarioNome);
+    agendarRenovacao();
+    await entrarNoApp();
   };
-  // prompt:'select_account' abre o seletor de conta
   tokenClient.requestAccessToken({ prompt: 'select_account' });
 }
 
-async function posLogin() {
+async function entrarNoApp() {
   try {
     document.getElementById('login-status').textContent = 'Carregando...';
-    // Busca nome do usuário
-    const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-      headers: { Authorization: 'Bearer ' + accessToken }
-    });
-    const info = await res.json();
-    usuarioNome = info.given_name || info.name || 'Usuário';
     document.getElementById('user-info').textContent = usuarioNome;
     await inicializarSheets();
     document.getElementById('login-overlay').classList.remove('visible');
@@ -376,15 +411,17 @@ async function posLogin() {
     renderTabela();
   } catch(e) {
     console.error(e);
+    // Token pode ter expirado mesmo com timestamp ok — limpa e pede login
+    limparToken();
     document.getElementById('login-error').style.display = 'block';
-    document.getElementById('login-status').textContent = 'Faça login com sua conta Google para continuar';
+    document.getElementById('login-status').textContent = 'Sessão expirada. Faça login novamente.';
   }
 }
 
 function fazerLogout() {
-  if (accessToken) {
-    google.accounts.oauth2.revoke(accessToken, () => {});
-  }
+  clearTimeout(renovacaoTimer);
+  limparToken();
+  if (accessToken) { try { google.accounts.oauth2.revoke(accessToken, ()=>{}); } catch(e){} }
   accessToken = null; usuarioNome = null;
   precosSheets = {}; cadastroSheets = {}; excluidosSheets = new Set();
   document.getElementById('main-content').style.display = 'none';
