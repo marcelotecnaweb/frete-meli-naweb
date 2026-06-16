@@ -166,7 +166,7 @@
 </head>
 <body class="light-mode">
 <script>(function(){var t=localStorage.getItem('tema');if(t==='dark')document.body.classList.remove('light-mode');})()</script>
-<button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">­ƒîÖ Modo escuro</button>
+<button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">☀️ Modo escuro</button>
 
 <header>
   <div class="header-left">
@@ -188,7 +188,7 @@
     </div>
     <div id="simular-preco-row" style="display:none; margin-bottom:20px; max-width:320px;">
       <div style="display:flex; align-items:center; gap:10px;">
-        <label style="font-family:var(--mono); font-size:11px; color:var(--text3); white-space:nowrap; letter-spacing:0.05em; text-transform:uppercase;">Simular pre├ºo de venda</label>
+        <label style="font-family:var(--mono); font-size:11px; color:var(--text3); white-space:nowrap; letter-spacing:0.05em; text-transform:uppercase;">Simular preço de venda</label>
         <div style="display:flex; align-items:center; gap:6px; flex:1;">
           <span style="font-family:var(--mono); font-size:13px; color:var(--text3);">R$</span>
           <input type="number" id="simular-preco-input" placeholder="ex: 129,90" step="0.01" min="0"
@@ -206,13 +206,13 @@
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
     <div></div>
     <div style="display:flex; gap:8px;">
-      <button class="btn" onclick="exportCSV()">Ôåô exportar CSV</button>
+      <button class="btn" onclick="exportCSV()">↓ exportar CSV</button>
       <button class="btn btn-primary" onclick="abrirModal()">+ novo produto</button>
     </div>
   </div>
 
   <div class="search-wrap">
-    <span class="search-icon">Ôîò</span>
+    <span class="search-icon">⌕</span>
     <input type="text" id="search" placeholder="buscar por SKU..." oninput="renderTabela()">
   </div>
   <div class="count-bar">
@@ -222,18 +222,18 @@
     <thead>
       <tr>
         <th>SKU</th>
-        <th>Dimens├Áes (cm)</th>
+        <th>Dimensões (cm)</th>
         <th class="right">Peso real</th>
         <th class="right">Peso ML</th>
         <th class="right">Frete</th>
-        <th class="right">Pre├ºo de Venda</th>
+        <th class="right">Preço de Venda</th>
         <th></th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
   <div id="empty-state" class="empty-state" style="display:none;">
-    <div class="big">Ôûú</div>
+    <div class="big">▣</div>
     <div>nenhum produto cadastrado ainda</div>
   </div>
 </div>
@@ -243,7 +243,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title" id="modal-title">Novo produto</span>
-      <button class="modal-close" onclick="fecharModal()">Ô£ò</button>
+      <button class="modal-close" onclick="fecharModal()">✕</button>
     </div>
     <div class="form-row">
       <div class="form-group" style="flex:2;">
@@ -255,26 +255,26 @@
         <input type="number" id="f-peso" placeholder="ex: 3.5" step="0.01" min="0" oninput="atualizarPreview()">
       </div>
       <div class="form-group">
-        <label>Pre├ºo venda (R$)</label>
+        <label>Preço venda (R$)</label>
         <input type="number" id="f-preco" placeholder="ex: 129.90" step="0.01" min="0" oninput="atualizarPreview()">
       </div>
     </div>
     <div class="form-group" style="margin-bottom:6px;">
-      <label>Dimens├Áes reais do ML (cm)</label>
+      <label>Dimensões reais do ML (cm)</label>
     </div>
     <div class="form-row" style="margin-bottom:0;">
       <div class="form-group"><label style="opacity:0.5;">Comp.</label><input type="number" id="f-c" placeholder="57.8" step="0.1" min="0" oninput="atualizarPreview()"></div>
-      <div class="form-sep">├ù</div>
+      <div class="form-sep">×</div>
       <div class="form-group"><label style="opacity:0.5;">Larg.</label><input type="number" id="f-l" placeholder="44.6" step="0.1" min="0" oninput="atualizarPreview()"></div>
-      <div class="form-sep">├ù</div>
+      <div class="form-sep">×</div>
       <div class="form-group"><label style="opacity:0.5;">Alt.</label><input type="number" id="f-a" placeholder="29.4" step="0.1" min="0" oninput="atualizarPreview()"></div>
     </div>
-    <span class="error-msg" id="error-msg">Preencha o SKU e todas as dimens├Áes.</span>
+    <span class="error-msg" id="error-msg">Preencha o SKU e todas as dimensões.</span>
     <div class="preview-box" id="preview-box">
-      <div class="preview-item"><div class="preview-label">C├║bico</div><div class="preview-value" id="prev-cubico">ÔÇö</div><div class="preview-sub">kg</div></div>
-      <div class="preview-item"><div class="preview-label">Peso ML</div><div class="preview-value" id="prev-pesoml">ÔÇö</div><div class="preview-sub">kg</div></div>
-      <div class="preview-item"><div class="preview-label">Frete c/ pre├ºo</div><div class="preview-value highlight" id="prev-frete-especifico">ÔÇö</div><div class="preview-sub" id="prev-frete-sub">cadastre pre├ºo</div></div>
-      <div class="preview-item"><div class="preview-label">Frete m├íx.</div><div class="preview-value highlight" id="prev-frete-max">ÔÇö</div><div class="preview-sub">acima R$ 200</div></div>
+      <div class="preview-item"><div class="preview-label">Cúbico</div><div class="preview-value" id="prev-cubico">—</div><div class="preview-sub">kg</div></div>
+      <div class="preview-item"><div class="preview-label">Peso ML</div><div class="preview-value" id="prev-pesoml">—</div><div class="preview-sub">kg</div></div>
+      <div class="preview-item"><div class="preview-label">Frete c/ preço</div><div class="preview-value highlight" id="prev-frete-especifico">—</div><div class="preview-sub" id="prev-frete-sub">cadastre preço</div></div>
+      <div class="preview-item"><div class="preview-label">Frete máx.</div><div class="preview-value highlight" id="prev-frete-max">—</div><div class="preview-sub">acima R$ 200</div></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger" id="btn-deletar" onclick="deletarProduto()" style="display:none; margin-right:auto;">Deletar produto</button>
@@ -288,21 +288,21 @@
 
 <script>
 // ============================================================
-// TABELAS DE FRETE (extra├¡das do xlsx)
+// TABELAS DE FRETE (extraídas do xlsx)
 // Formato: [limite_superior_kg, col1, col2, ...]
 // ============================================================
 
-// Tabela FIXA (at├® R$ 78,99): [lim, r0_18, r19_48, r49_78]
+// Tabela FIXA (até R$ 78,99): [lim, r0_18, r19_48, r49_78]
 const TABFIX = [[0.3,5.65,6.55,7.75],[0.5,5.95,6.65,7.85],[1,6.05,6.75,7.95],[1.5,6.15,6.85,8.05],[2,6.25,6.95,8.15],[3,6.35,7.95,8.55],[4,6.45,8.15,8.95],[5,6.55,8.35,9.75],[6,6.65,8.55,9.95],[7,6.75,8.75,10.15],[8,6.85,8.95,10.35],[9,6.95,9.15,10.55],[11,7.05,9.55,10.95],[13,7.15,9.95,11.35],[15,7.25,10.15,11.55],[17,7.35,10.35,11.75],[20,7.45,10.55,11.95],[25,7.65,10.95,12.15],[30,7.75,11.15,12.35],[40,7.85,11.35,12.55],[50,7.95,11.55,12.75],[60,8.05,11.75,12.95],[70,8.15,11.95,13.15],[80,8.25,12.15,13.35],[90,8.35,12.35,13.55],[100,8.45,12.55,13.75],[125,8.55,12.75,13.95],[150,8.65,12.75,14.15],[99999,8.75,12.75,14.35]];
 
 // Tabela VARI├üVEL (R$ 79+): [lim, r79_99, r100_119, r120_149, r150_199, r200+]
 const TABVAR = [[0.3,12.35,14.35,16.45,18.45,20.95],[0.5,13.25,15.45,17.65,19.85,22.55],[1,13.85,16.15,18.45,20.75,23.65],[1.5,14.15,16.45,18.85,21.15,24.65],[2,14.45,16.85,19.25,21.65,24.65],[3,15.75,18.35,21.05,23.65,26.25],[4,17.05,19.85,22.65,25.55,28.35],[5,18.45,21.55,24.65,27.75,30.75],[6,25.45,28.55,32.65,35.75,39.75],[7,27.05,31.05,36.05,40.05,44.05],[8,28.85,33.65,38.45,43.25,48.05],[9,29.65,34.55,39.55,44.45,49.35],[11,41.25,48.05,54.95,61.75,68.65],[13,42.15,49.25,56.25,63.25,70.25],[15,45.05,52.45,59.95,67.45,74.95],[17,48.55,56.05,63.55,70.75,78.65],[20,54.75,63.85,72.95,82.05,91.15],[25,64.05,75.05,84.75,95.35,105.95],[30,65.95,75.45,85.55,96.25,106.95],[40,67.75,78.95,88.95,99.15,107.05],[50,70.25,81.05,92.05,102.55,110.75],[60,74.95,86.45,98.15,109.35,118.15],[70,80.25,92.95,105.05,117.15,126.55],[80,83.95,97.05,109.85,122.45,132.25],[90,93.25,107.45,122.05,136.05,146.95],[100,106.55,123.95,139.55,155.55,167.95],[125,119.25,138.05,156.05,173.95,187.95],[150,126.55,146.15,165.65,184.65,199.45],[99999,166.15,192.45,217.55,242.55,261.95]];
 
-// Colunas de pre├ºo (para exibi├º├úo)
+// Colunas de preço (para exibição)
 const COLUNAS_FIX = ['R$ 0ÔÇô18,99','R$ 19ÔÇô48,99','R$ 49ÔÇô78,99'];
 const COLUNAS_VAR = ['R$ 79ÔÇô99,99','R$ 100ÔÇô119,99','R$ 120ÔÇô149,99','R$ 150ÔÇô199,99','R$ 200+'];
 
-// Produtos do xlsx (base fixa, n├úo edit├ível)
+// Produtos do xlsx (base fixa, não editável)
 const PRODUTOS_XLSX = {"ALMO-01":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35,"maiorPeso":1.17},"ALMO-02":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35,"maiorPeso":1.17},"AMA-01":{"larg":12,"comp":8,"alt":34,"pesoReal":1.15,"maiorPeso":1.15},"ANDEMP1-01":{"larg":36,"comp":12,"alt":32.5,"pesoReal":1.7,"maiorPeso":2.34},"ANDEMP1-02":{"larg":46,"comp":11,"alt":33.5,"pesoReal":1.4,"maiorPeso":2.8251666666666666},"ANDEMP3-01":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ANDEMP3-02":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ANDEMP3-03":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ARACAB-BR":{"larg":19.5,"comp":6,"alt":57,"pesoReal":1.45,"maiorPeso":1.45},"ARACAB-PT":{"larg":19.5,"comp":6,"alt":57,"pesoReal":1.4,"maiorPeso":1.4},"ASSREDU-AZ":{"larg":50.5,"comp":7.5,"alt":37.5,"pesoReal":1.35,"maiorPeso":2.3671875},"ASSREDU-CZ":{"larg":51.3,"comp":7.5,"alt":37.5,"pesoReal":1.5,"maiorPeso":2.4046875},"ASSREDU-RS":{"larg":50.3,"comp":7.5,"alt":37.5,"pesoReal":1.45,"maiorPeso":2.3578125},"BATER1-AZ":{"larg":27,"comp":10,"alt":18,"pesoReal":0.3,"maiorPeso":0.81},"BATER1-VM":{"larg":27,"comp":10,"alt":18,"pesoReal":0.3,"maiorPeso":0.81},"BATER2-AZ":{"larg":36.1,"comp":16.5,"alt":31,"pesoReal":1.15,"maiorPeso":3.077525},"BATER2-VM":{"larg":36.1,"comp":16.5,"alt":31,"pesoReal":1.15,"maiorPeso":3.077525},"BIKE12-AZ":{"larg":70,"comp":18,"alt":29,"pesoReal":4.65,"maiorPeso":6.09},"BIKE12-BR":{"larg":69.5,"comp":17.5,"alt":28.5,"pesoReal":4.65,"maiorPeso":5.7771875},"BIKE12-PT":{"larg":70,"comp":16,"alt":28.5,"pesoReal":4.65,"maiorPeso":5.32},"BIKE12-RS":{"larg":70.2,"comp":16.5,"alt":29,"pesoReal":4.55,"maiorPeso":5.59845},"BOLSA04-01":{"larg":25,"comp":7,"alt":30,"pesoReal":0.65,"maiorPeso":0.875},"BOLSA04-02":{"larg":30,"comp":7,"alt":32,"pesoReal":0.35,"maiorPeso":1.12},"BOLSA05-01":{"larg":29,"comp":8,"alt":28,"pesoReal":0.4,"maiorPeso":1.0826666666666667},"BOLSA06-01":{"larg":29,"comp":10,"alt":28,"pesoReal":0.4,"maiorPeso":1.3533333333333333},"BOLSA06-02":{"larg":26,"comp":6,"alt":27,"pesoReal":0.5,"maiorPeso":0.702},"BON-09":{"larg":20.2,"comp":13,"alt":47.5,"pesoReal":1.15,"maiorPeso":2.078916666666666},"CAB30-01":{"larg":40.5,"comp":32,"alt":10,"pesoReal":2.15,"maiorPeso":2.16},"CAB30-02":{"larg":40,"comp":32.5,"alt":9.5,"pesoReal":2.1,"maiorPeso":2.1},"CAB30-03":{"larg":40,"comp":32,"alt":9.5,"pesoReal":2.2,"maiorPeso":2.2},"CAB50-01":{"larg":39.5,"comp":32,"alt":14,"pesoReal":3.3,"maiorPeso":3.3},"CAB50-02":{"larg":40,"comp":32,"alt":14,"pesoReal":3.3,"maiorPeso":3.3},"CAB50-03":{"larg":40,"comp":32.3,"alt":14,"pesoReal":3.45,"maiorPeso":3.45},"CABINF20-AZ":{"larg":31.5,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8019375},"CABINF20-BG":{"larg":31,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8},"CABINF20-PT":{"larg":31,"comp":7,"alt":24,"pesoReal":0.8,"maiorPeso":0.868},"CABINF20-RS":{"larg":31,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8},"CABINF40-AZ":{"larg":31,"comp":11.5,"alt":23.5,"pesoReal":1.5,"maiorPeso":1.5},"CABINF40-BG":{"larg":31.5,"comp":12,"alt":23,"pesoReal":1.45,"maiorPeso":1.449},"CABINF40-PT":{"larg":31,"comp":12,"alt":24,"pesoReal":1.59,"maiorPeso":1.59},"CABINF40-RS":{"larg":31,"comp":12,"alt":24,"pesoReal":1.55,"maiorPeso":1.55},"CABMAN-BR":{"larg":60.5,"comp":6.5,"alt":37,"pesoReal":1.35,"maiorPeso":2.4250416666666665},"CABMAN-BR2":{"larg":16.5,"comp":6,"alt":18,"pesoReal":0.65,"maiorPeso":0.65},"CABMAN-PT":{"larg":60.5,"comp":6.5,"alt":37,"pesoReal":1.35,"maiorPeso":2.4250416666666665},"CABMAN-PT2":{"larg":16.5,"comp":6,"alt":18,"pesoReal":0.65,"maiorPeso":0.65},"CABMD1-10":{"larg":32,"comp":6,"alt":32.5,"pesoReal":1.175,"maiorPeso":1.175},"CABMD1-100":{"larg":33.5,"comp":33.5,"alt":62.5,"pesoReal":10.95,"maiorPeso":11.690104166666666},"CABMD1-20":{"larg":33,"comp":12.5,"alt":32,"pesoReal":2.25,"maiorPeso":2.25},"CABMD1-30":{"larg":32.5,"comp":18.5,"alt":32.5,"pesoReal":3.3,"maiorPeso":3.3},"CABREG-PT":{"larg":66.5,"comp":7.5,"alt":12,"pesoReal":1.25,"maiorPeso":1.25},"CADALM-AZ":{"larg":40,"comp":40,"alt":42.5,"pesoReal":1.65,"maiorPeso":11.333333333333334},"CADALM-RS":{"larg":40,"comp":40,"alt":42.5,"pesoReal":1.65,"maiorPeso":11.333333333333334},"CADALM2-AZ":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-BR":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-CZ":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-RS":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM3-AZ":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":8.91},"CADALM3-CZ":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":8.91},"CADALM3-RS":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":1.73},"CADALM4-AZ":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-BR":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-CZ":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-RS":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADEINF01-AZ":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEINF02-VD":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEINF03-RS":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEIR1-CZ":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CADEIR1-PT":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CADEIR1-VM":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CAIXAORG-01":{"larg":52,"comp":5,"alt":30,"pesoReal":0.9,"maiorPeso":1.3},"CAIXAORG-02":{"larg":52,"comp":5,"alt":30,"pesoReal":0.9,"maiorPeso":1.3},"CAM-140":{"larg":86,"comp":25.5,"alt":15,"pesoReal":8.2,"maiorPeso":8.2},"CAM-180":{"larg":92,"comp":32,"alt":15.5,"pesoReal":12.15,"maiorPeso":12.15},"CAR1-CZ":{"larg":100,"comp":57,"alt":40,"pesoReal":18.45,"maiorPeso":38},"CAR2-BR":{"larg":100,"comp":57,"alt":40,"pesoReal":18.45,"maiorPeso":38},"CAR2-VM":{"larg":100,"comp":37.5,"alt":38,"pesoReal":18.2,"maiorPeso":23.75},"CAR4-AZ":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.3,"maiorPeso":2.82975},"CAR4-LJ":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.35,"maiorPeso":2.82975},"CAR4-VM":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.35,"maiorPeso":2.82975},"CARDINO-01":{"larg":42.5,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.9125},"CARDINO-02":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARDINO-03":{"larg":42.5,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.9125},"CARDINO-04":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARDINO-05":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARMU-BR":{"larg":42,"comp":32.5,"alt":16,"pesoReal":2.65,"maiorPeso":3.64},"CARMU-PT":{"larg":42,"comp":33,"alt":16,"pesoReal":2.65,"maiorPeso":3.696},"CARMU2-BR":{"larg":35,"comp":26,"alt":20,"pesoReal":1.2,"maiorPeso":3.033333333333333},"CARMU2-PT":{"larg":35,"comp":26,"alt":20,"pesoReal":1.2,"maiorPeso":3.033333333333333},"CERCADO01-AZ":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO01-CZ":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO01-RS":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO02-AZ":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CERCADO02-CZ":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CERCADO02-RS":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CESTO-01":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-02":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-03":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-04":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-05":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CHOC1-AM":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-AZ":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-BR":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-VD":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC2-AM":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC2-AZ":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"COZ01-01":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ01-02":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ01-03":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ012-01":{"larg":36,"comp":12,"alt":28,"pesoReal":0.9,"maiorPeso":2.016},"COZ03-01":{"larg":25,"comp":9,"alt":33,"pesoReal":0.65,"maiorPeso":1.2375},"COZ03-02":{"larg":25,"comp":9,"alt":33,"pesoReal":0.65,"maiorPeso":1.2375},"COZ04-01":{"larg":42,"comp":13,"alt":47,"pesoReal":1.5,"maiorPeso":4.277},"COZ04-02":{"larg":27,"comp":15,"alt":49,"pesoReal":1.5,"maiorPeso":3.3075},"COZ08-01":{"larg":67,"comp":15,"alt":53,"pesoReal":4.15,"maiorPeso":8.8775},"CXRE04-01":{"larg":26,"comp":9.5,"alt":15,"pesoReal":0.35,"maiorPeso":0.6175},"CXRE05-01":{"larg":29,"comp":18,"alt":24,"pesoReal":0.9,"maiorPeso":2.088},"DISP-01":{"larg":23,"comp":8,"alt":20,"pesoReal":0.2,"maiorPeso":0.6133333333333333},"ESCAV1-AM":{"larg":52.5,"comp":27,"alt":25,"pesoReal":2.1,"maiorPeso":5.90625},"ESCAV1-AZ":{"larg":55,"comp":27,"alt":25,"pesoReal":2.1,"maiorPeso":6.1875},"ESCOR-03":{"larg":62.5,"comp":35,"alt":9,"pesoReal":2.1,"maiorPeso":3.28125},"ESCOR-36":{"larg":37.05,"comp":12,"alt":26.5,"pesoReal":1.005,"maiorPeso":1.96365},"ESCOR-38":{"larg":38,"comp":12,"alt":26,"pesoReal":1.15,"maiorPeso":1.976},"ESCOR7-AZ":{"larg":90,"comp":53,"alt":36,"pesoReal":12.2,"maiorPeso":28.62},"ESCOR7-RS":{"larg":90,"comp":53,"alt":36,"pesoReal":12.2,"maiorPeso":28.62},"FER01-01":{"larg":27.5,"comp":10,"alt":22,"pesoReal":0.8,"maiorPeso":1.0083333333333333},"FER02-01":{"larg":36,"comp":8,"alt":40,"pesoReal":1.75,"maiorPeso":1.92},"GOL-01":{"larg":56,"comp":5,"alt":11,"pesoReal":0.3,"maiorPeso":0.5133333333333333},"GOL-02":{"larg":61,"comp":6,"alt":19,"pesoReal":0.85,"maiorPeso":1.159},"GRORG1-CZ":{"larg":58,"comp":19,"alt":13,"pesoReal":2.25,"maiorPeso":2.3876666666666666},"GRORG1-PT":{"larg":58,"comp":19,"alt":13,"pesoReal":2.25,"maiorPeso":2.3876666666666666},"GUITMIC-AZ":{"larg":43.5,"comp":5.5,"alt":32,"pesoReal":0.6,"maiorPeso":1.276},"GUITMIC-RS":{"larg":43.5,"comp":5.5,"alt":32,"pesoReal":0.6,"maiorPeso":1.276},"JOGOPAN-01":{"larg":50.5,"comp":30,"alt":16.5,"pesoReal":4.2,"maiorPeso":4.2},"JOGOPAN-06":{"larg":50,"comp":30,"alt":16.5,"pesoReal":4.5,"maiorPeso":4.5},"JOGOPAN-07":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"JOGOPAN-08":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"JOGOPAN-09":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"MAGNET11-01":{"larg":30,"comp":7,"alt":22,"pesoReal":0.6,"maiorPeso":0.77},"MAGNET17-01":{"larg":23,"comp":23,"alt":8,"pesoReal":0.75,"maiorPeso":0.75},"MAGNET2-01":{"larg":20,"comp":11,"alt":4,"pesoReal":0.6,"maiorPeso":0.6},"MAGNET3-01":{"larg":29,"comp":10,"alt":23,"pesoReal":1.3,"maiorPeso":1.3},"MAGNET4-01":{"larg":34,"comp":8,"alt":34,"pesoReal":1.65,"maiorPeso":1.65},"MERCADO01-01":{"larg":45,"comp":26,"alt":45,"pesoReal":2.45,"maiorPeso":8.775},"MERCADO02-01":{"larg":45,"comp":26,"alt":45,"pesoReal":2.45,"maiorPeso":8.775},"MERCADO03-01":{"larg":56,"comp":21,"alt":48,"pesoReal":2.35,"maiorPeso":9.408},"MERCADO04-01":{"larg":39,"comp":14,"alt":29,"pesoReal":1.1,"maiorPeso":2.639},"MERCADO04-02":{"larg":39,"comp":14,"alt":29,"pesoReal":1.005,"maiorPeso":2.639},"MES-DINOAZ":{"larg":33,"comp":8,"alt":25,"pesoReal":0.7,"maiorPeso":1.1},"MES-DINORS":{"larg":33,"comp":8,"alt":25,"pesoReal":0.7,"maiorPeso":1.1},"MESBLC1-AZ":{"larg":35,"comp":11,"alt":23,"pesoReal":0.7,"maiorPeso":1.4758333333333333},"MESBLC1-RS":{"larg":35,"comp":11,"alt":23,"pesoReal":0.7,"maiorPeso":1.4758333333333333},"MIXER1-PT":{"larg":53,"comp":10,"alt":22,"pesoReal":1.2,"maiorPeso":1.9433333333333334},"MOTO1-AZ":{"larg":91,"comp":34,"alt":48,"pesoReal":12.75,"maiorPeso":24.752},"MOTO1-VM":{"larg":91,"comp":34,"alt":48,"pesoReal":12.75,"maiorPeso":24.752},"PAT-01":{"larg":78,"comp":11,"alt":29,"pesoReal":4,"maiorPeso":4.147},"PAT-02":{"larg":78,"comp":11,"alt":29,"pesoReal":4,"maiorPeso":4.147},"PATINF-AZ":{"larg":49,"comp":16,"alt":28,"pesoReal":2.1,"maiorPeso":3.6586666666666665},"PATINF-RS":{"larg":49,"comp":16,"alt":28,"pesoReal":2.1,"maiorPeso":3.6586666666666665},"PATINFS-AZ":{"larg":57,"comp":14,"alt":24,"pesoReal":1.3,"maiorPeso":3.192},"PATINFS-PT":{"larg":57,"comp":13.5,"alt":24,"pesoReal":1.22,"maiorPeso":3.078},"PATINFS-RS":{"larg":57,"comp":14,"alt":24,"pesoReal":1.3,"maiorPeso":3.192},"PATALUM-RS-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-RS-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-RS-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PEGBIC1-VD":{"larg":19,"comp":16,"alt":30,"pesoReal":0.8,"maiorPeso":1.52},"PEGBIC2-RS":{"larg":19,"comp":16,"alt":30,"pesoReal":0.8,"maiorPeso":1.52},"PENTE1-01":{"larg":40,"comp":10,"alt":54,"pesoReal":1.45,"maiorPeso":3.6},"PENTE3-01":{"larg":29,"comp":6,"alt":28,"pesoReal":0.35,"maiorPeso":0.812},"PENTE3-02":{"larg":29,"comp":6,"alt":28,"pesoReal":0.35,"maiorPeso":0.812},"PENTE4-01":{"larg":45,"comp":7,"alt":28,"pesoReal":0.7,"maiorPeso":1.47},"PENTE4-02":{"larg":45,"comp":7,"alt":28,"pesoReal":0.7,"maiorPeso":1.47},"PIST-BOMB":{"larg":44,"comp":7,"alt":33,"pesoReal":0.8,"maiorPeso":1.694},"PIST-CON":{"larg":53,"comp":7,"alt":39,"pesoReal":1,"maiorPeso":2.4115},"PIST-EST":{"larg":44,"comp":7,"alt":31,"pesoReal":0.7,"maiorPeso":1.5913333333333333},"PIST-LAV":{"larg":39,"comp":6,"alt":30,"pesoReal":0.7,"maiorPeso":1.17},"PIST-POL":{"larg":44,"comp":7,"alt":33,"pesoReal":0.75,"maiorPeso":1.694},"PISTCON-180":{"larg":33,"comp":7,"alt":22,"pesoReal":0.5,"maiorPeso":0.847},"PISTCON-345":{"larg":35,"comp":10,"alt":27,"pesoReal":0.9,"maiorPeso":1.575},"PISTCON-98":{"larg":29,"comp":6,"alt":22,"pesoReal":0.45,"maiorPeso":0.638},"PISTDINO-217":{"larg":47,"comp":10,"alt":36,"pesoReal":1.4,"maiorPeso":2.82},"PISTDINO-277":{"larg":29,"comp":16,"alt":19,"pesoReal":1.25,"maiorPeso":1.4693333333333334},"PISTDINO-92":{"larg":32,"comp":9,"alt":21,"pesoReal":0.6,"maiorPeso":1.008},"PISTGAR-BOM":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PISTGAR-CON":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PISTGAR-POL":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PORTCHAV1-BG":{"larg":7.5,"comp":8.5,"alt":21,"pesoReal":0.8,"maiorPeso":0.8},"PORTCHAV2-BG":{"larg":19,"comp":9,"alt":26,"pesoReal":1.4,"maiorPeso":1.4},"PORTCHAV3-BG":{"larg":26,"comp":9,"alt":32,"pesoReal":2.3,"maiorPeso":2.3},"POTEH-01":{"larg":25,"comp":13,"alt":35.5,"pesoReal":1.95,"maiorPeso":1.95},"POTEH-03":{"larg":35,"comp":12.5,"alt":36,"pesoReal":3.15,"maiorPeso":3.15},"PRAN1-01":{"larg":38,"comp":9.5,"alt":67.5,"pesoReal":2,"maiorPeso":4.06125},"PRAN3-01":{"larg":38,"comp":10,"alt":67.5,"pesoReal":2.05,"maiorPeso":4.275},"PTERNO-PT":{"larg":23,"comp":7,"alt":30,"pesoReal":0.35,"maiorPeso":0.805},"QUAD1-AM":{"larg":73,"comp":38,"alt":38,"pesoReal":6.9,"maiorPeso":17.568666666666665},"SAP01-BR":{"larg":51,"comp":7,"alt":16,"pesoReal":0.95,"maiorPeso":0.952},"SAP01-PT":{"larg":51,"comp":7,"alt":16,"pesoReal":0.95,"maiorPeso":0.952},"SUPVAR-AZ":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR-BLACK":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR-PT":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR2-AZ":{"larg":72,"comp":9,"alt":7,"pesoReal":2.45,"maiorPeso":2.45},"TAP6MM-01":{"larg":59,"comp":7,"alt":36,"pesoReal":0.4,"maiorPeso":2.478},"TAP6MM-02":{"larg":59,"comp":7,"alt":36,"pesoReal":0.4,"maiorPeso":2.478},"TAP8MM-01":{"larg":73.5,"comp":8,"alt":35.5,"pesoReal":0.45,"maiorPeso":3.479},"TAP8MM-02":{"larg":73.5,"comp":8,"alt":35.5,"pesoReal":0.45,"maiorPeso":3.479},"TAPINF1-AZ":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF1-RS":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF1-VD":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-01":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-02":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-03":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TEC01-AZ":{"larg":49,"comp":14.5,"alt":19.5,"pesoReal":1.35,"maiorPeso":2.309125},"TEC01-RS":{"larg":54.5,"comp":10,"alt":47.5,"pesoReal":1.8,"maiorPeso":4.314583333333333},"TEND3-02":{"larg":32.5,"comp":4.5,"alt":24,"pesoReal":0.85,"maiorPeso":0.85},"TICO1-AM":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-AZ":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-BR":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-RS":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-VM":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO2-AM":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-AZ":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-RS":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-TR":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TRIC1-BR":{"larg":69,"comp":39,"alt":40.5,"pesoReal":9,"maiorPeso":18.16425},"TRIC1-RS":{"larg":69,"comp":39,"alt":41,"pesoReal":9,"maiorPeso":18.3885},"TRIC2-AZ":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-BR":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-LJ":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-RS":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-VM":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2EM1-AZ":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-BR":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-RS":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-VM":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRICC-AM":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-AZ":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-PT":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-RS":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-VM":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICSA-AM":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-AZ":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-BR":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-RS":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-VM":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"VACBAG04B-01":{"larg":25,"comp":6,"alt":36,"pesoReal":0.95,"maiorPeso":0.95},"VACBAG05B-01":{"larg":28,"comp":6,"alt":29,"pesoReal":0.4,"maiorPeso":0.812},"VACBAG10-01":{"larg":27,"comp":9,"alt":29,"pesoReal":1.3,"maiorPeso":1.3},"VACBAG10B-01":{"larg":30,"comp":7,"alt":32,"pesoReal":0.95,"maiorPeso":1.12}};
 
 const STORAGE_KEY = 'frete-ml-produtos-v2';
@@ -311,10 +311,10 @@ let editandoIndex = -1;
 let editandoPrecoSku = null;
 
 // ============================================================
-// L├ôGICA DE FRETE
+// LÓGICA DE FRETE
 // ============================================================
 const FAIXAS_LABEL = [
-  [0.3,  'At├® 0,3 kg'],
+  [0.3,  'Até 0,3 kg'],
   [0.5,  'De 0,3 a 0,5 kg'],
   [1,    'De 0,5 a 1 kg'],
   [1.5,  'De 1 a 1,5 kg'],
@@ -362,7 +362,7 @@ function buscarFrete(pesoKg) {
   };
 }
 
-// Retorna o frete espec├¡fico dado um pre├ºo de venda
+// Retorna o frete específico dado um preço de venda
 function buscarFretePorPreco(pesoKg, preco) {
   if (!preco || preco <= 0) return null;
   const f = buscarFrete(pesoKg);
@@ -432,11 +432,11 @@ function renderEmptyStateConsulta(div) {
       <div style="display:inline-flex;gap:32px;align-items:flex-start;">
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
           <span style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--accent-text);">${comPreco}</span>
-          <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">com pre├ºo cadastrado</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">com preço cadastrado</span>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
           <a href="#" onclick="event.preventDefault();switchTab('produtos');" style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--red);text-decoration:none;">${semPreco}</a>
-          <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">sem pre├ºo cadastrado</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">sem preço cadastrado</span>
         </div>
       </div>
     </div>`;
@@ -465,11 +465,11 @@ function consultarSKU() {
     renderResultadoSKU(p, div);
   } else {
     simularRow.style.display = 'none';
-    // Sugest├Áes
+    // Sugestões
     const todas = [...Object.keys(PRODUTOS_XLSX), ...produtos.map(p=>p.sku)];
     const unicas = [...new Set(todas)];
     const sugs = unicas.filter(s => s.includes(q)).slice(0, 8);
-    let html = `<div class="sku-not-found">SKU n├úo encontrado: <strong>${q}</strong>`;
+    let html = `<div class="sku-not-found">SKU não encontrado: <strong>${q}</strong>`;
     if (sugs.length) {
       html += `<div class="sugestoes" style="margin-top:12px;">` +
         sugs.map(s => `<span class="sug-item" onclick="selecionarSug('${s}')">${s}</span>`).join('') +
@@ -489,12 +489,12 @@ function renderResultadoSKU(p, div) {
   const pesoML = calcularPesoML(p);
   const cubico = (p.comp * p.larg * p.alt) / 6000;
   const fretes = buscarFrete(pesoML);
-  const base = cubico >= (p.pesoReal||0) ? 'c├║bico' : 'real';
+  const base = cubico >= (p.pesoReal||0) ? 'cúbico' : 'real';
   const origemBadge = p.origem === 'xlsx'
     ? `<span class="tag tag-xlsx" style="font-size:10px;">xlsx</span>`
     : `<span class="tag tag-cubico" style="font-size:10px;">local</span>`;
 
-  // Pegar pre├ºo simulado (do input) ou pre├ºo cadastrado do produto
+  // Pegar preço simulado (do input) ou preço cadastrado do produto
   const simInput = parseFloat(document.getElementById('simular-preco-input').value) || 0;
   const precoSimulado = simInput > 0 ? simInput : (p.precoVenda || 0);
   const freteSimulado = precoSimulado > 0 ? buscarFretePorPreco(pesoML, precoSimulado) : null;
@@ -511,7 +511,7 @@ function renderResultadoSKU(p, div) {
     { label: 'R$ 200+',       val: fretes.r200 },
   ];
 
-  // Badge de pre├ºo simulado
+  // Badge de preço simulado
   let precoSimBadge = '';
   if (precoSimulado > 0) {
     const fonte = simInput > 0 ? 'simulado' : 'cadastrado';
@@ -526,12 +526,12 @@ function renderResultadoSKU(p, div) {
         ${precoSimBadge}
       </div>
       <div class="sku-pesos" style="margin-bottom:16px;">
-        <div class="sku-peso-item"><span class="sku-peso-label">Dimens├Áes</span><span class="sku-peso-val">${p.comp} ├ù ${p.larg} ├ù ${p.alt} cm</span></div>
+        <div class="sku-peso-item"><span class="sku-peso-label">Dimensões</span><span class="sku-peso-val">${p.comp} × ${p.larg} × ${p.alt} cm</span></div>
         <div class="sku-peso-item"><span class="sku-peso-label">Peso real</span><span class="sku-peso-val">${fmt(p.pesoReal||0)} kg</span></div>
-        <div class="sku-peso-item"><span class="sku-peso-label">Peso c├║bico</span><span class="sku-peso-val">${fmt(cubico)} kg</span></div>
+        <div class="sku-peso-item"><span class="sku-peso-label">Peso cúbico</span><span class="sku-peso-val">${fmt(cubico)} kg</span></div>
         <div class="sku-peso-item"><span class="sku-peso-label">Faixa ML (${base})</span><span class="sku-peso-val" style="color:var(--accent-text);font-weight:500;">${faixaLabel(pesoML)}</span></div>
       </div>
-      <div class="faixas-title">frete por faixa de pre├ºo de venda${idxDestacado >= 0 ? ' ÔÇö card destacado ├® o ativo' : ''}</div>
+      <div class="faixas-title">frete por faixa de preço de venda${idxDestacado >= 0 ? ' — card destacado é o ativo' : ''}</div>
       <div class="faixas-grid">
         ${todasColunas.map((c, i) => {
           let cardClass = 'faixa-card';
@@ -578,9 +578,9 @@ function renderTabela() {
     const preco = p.precoVenda || null;
     if (preco && preco > 0) {
       const fe = buscarFretePorPreco(pesoML, preco);
-      freCell = fe ? `<td class="right accent">R$ ${fmt(fe.valor)}</td>` : `<td class="right muted">ÔÇö</td>`;
+      freCell = fe ? `<td class="right accent">R$ ${fmt(fe.valor)}</td>` : `<td class="right muted">—</td>`;
     } else {
-      freCell = `<td class="right"><span style="font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">sem pre├ºo</span></td>`;
+      freCell = `<td class="right"><span style="font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">sem preço</span></td>`;
     }
     const localIdx = produtos.findIndex(lp => lp.sku.toUpperCase() === p.sku.toUpperCase());
     const editIdx = localIdx >= 0 ? localIdx : -1;
@@ -591,15 +591,15 @@ function renderTabela() {
     } else {
       precoVendaCell = p.precoVenda && p.precoVenda > 0
         ? `<td class="right accent">R$ ${fmt(p.precoVenda)}</td>`
-        : `<td class="right muted">ÔÇö</td>`;
+        : `<td class="right muted">—</td>`;
     }
     const btnDetalhes = `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="editarProduto(${editIdx},'${p.sku}')">Ver detalhes</button>`;
     const btnPreco = isEditingPrice
       ? `<button class="btn btn-primary" style="padding:4px 10px;font-size:10px;" onclick="salvarPrecoInline()">Salvar</button>`
-      : `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="iniciarEdicaoPreco('${p.sku}')">Alterar Pre├ºo</button>`;
+      : `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="iniciarEdicaoPreco('${p.sku}')">Alterar Preço</button>`;
     return `<tr>
       <td class="sku-cell">${p.sku}</td>
-      <td class="dim-cell">${p.comp} ├ù ${p.larg} ├ù ${p.alt}</td>
+      <td class="dim-cell">${p.comp} × ${p.larg} × ${p.alt}</td>
       <td class="right muted">${fmt(p.pesoReal||0)} kg</td>
       <td class="right muted">${fmt(pesoML)} kg</td>
       ${freCell}
@@ -611,7 +611,7 @@ function renderTabela() {
 
 function editarProduto(idx, sku) {
   if (idx >= 0) { abrirModal(idx); return; }
-  // Produto ├® do xlsx ÔÇö pre-preenche o modal para criar vers├úo local
+  // Produto é do xlsx — pre-preenche o modal para criar versão local
   const p = PRODUTOS_XLSX[sku];
   if (!p) return;
   editandoIndex = -1;
@@ -629,7 +629,7 @@ function editarProduto(idx, sku) {
 }
 
 function confirmarDeletar(idx, sku) {
-  if (idx < 0) { toast('Produto do xlsx n├úo pode ser deletado.'); return; }
+  if (idx < 0) { toast('Produto do xlsx não pode ser deletado.'); return; }
   if (confirm('Tem certeza que deseja deletar o produto?')) {
     produtos.splice(idx, 1); salvarStorage(); renderTabela(); toast('Produto removido.');
   }
@@ -656,7 +656,7 @@ function salvarPrecoInline() {
   salvarStorage();
   editandoPrecoSku = null;
   renderTabela();
-  toast('Pre├ºo salvo.', true);
+  toast('Preço salvo.', true);
 }
 
 function abrirModal(idx=-1) {
@@ -692,8 +692,8 @@ function atualizarPreview() {
   const pr = parseFloat(document.getElementById('f-peso').value) || 0;
   const pv = parseFloat(document.getElementById('f-preco').value) || 0;
   if (!c||!l||!a) {
-    ['prev-cubico','prev-pesoml','prev-frete-especifico','prev-frete-max'].forEach(id => document.getElementById(id).textContent='ÔÇö');
-    document.getElementById('prev-frete-sub').textContent = 'cadastre pre├ºo';
+    ['prev-cubico','prev-pesoml','prev-frete-especifico','prev-frete-max'].forEach(id => document.getElementById(id).textContent='—');
+    document.getElementById('prev-frete-sub').textContent = 'cadastre preço';
     return;
   }
   const cubico = (c*l*a)/6000;
@@ -701,14 +701,14 @@ function atualizarPreview() {
   document.getElementById('prev-cubico').textContent = fmt(cubico);
   document.getElementById('prev-pesoml').textContent = fmt(pesoML);
   const fmax = freteMax(pesoML);
-  document.getElementById('prev-frete-max').textContent = fmax ? 'R$ '+fmt(fmax) : 'ÔÇö';
+  document.getElementById('prev-frete-max').textContent = fmax ? 'R$ '+fmt(fmax) : '—';
   if (pv > 0) {
     const fe = buscarFretePorPreco(pesoML, pv);
-    document.getElementById('prev-frete-especifico').textContent = fe ? 'R$ '+fmt(fe.valor) : 'ÔÇö';
+    document.getElementById('prev-frete-especifico').textContent = fe ? 'R$ '+fmt(fe.valor) : '—';
     document.getElementById('prev-frete-sub').textContent = 'R$ ' + fmt(pv) + ' p.venda';
   } else {
-    document.getElementById('prev-frete-especifico').textContent = 'ÔÇö';
-    document.getElementById('prev-frete-sub').textContent = 'cadastre pre├ºo';
+    document.getElementById('prev-frete-especifico').textContent = '—';
+    document.getElementById('prev-frete-sub').textContent = 'cadastre preço';
   }
 }
 
@@ -778,7 +778,7 @@ function toggleTheme() {
 
 function atualizarIconeTema() {
   document.getElementById('theme-toggle').textContent =
-    document.body.classList.contains('light-mode') ? '­ƒîÖ Modo escuro' : 'ÔÿÇ´©Å Modo claro';
+    document.body.classList.contains('light-mode') ? '☀️ Modo escuro' : '🌙 Modo claro';
 }
 
 carregar();
