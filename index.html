@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -35,6 +35,33 @@
   }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; padding: 24px; }
 
+  /* LOGIN OVERLAY */
+  #login-overlay {
+    display: none;
+    position: fixed; inset: 0; background: var(--bg);
+    z-index: 1000; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+  }
+  #login-overlay.visible { display: flex; }
+  .login-box {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 40px 48px; text-align: center;
+    max-width: 360px; width: 100%;
+  }
+  .login-box img { width: 60px; margin-bottom: 18px; opacity: 0.85; }
+  .login-box h2 { font-family: var(--mono); font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .login-box p { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-bottom: 24px; }
+  .btn-google {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    padding: 10px 20px; border-radius: 6px;
+    background: var(--accent); color: var(--btn-primary-text);
+    border: none; cursor: pointer; transition: background 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .btn-google:hover { background: var(--accent2); }
+  .login-loading { font-family: var(--mono); font-size: 12px; color: var(--text3); }
+
   /* TABS */
   .tabs { display: flex; gap: 2px; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
   .tab { font-family: var(--mono); font-size: 12px; padding: 10px 18px; background: none; border: none; color: var(--text3); cursor: pointer; letter-spacing: 0.04em; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
@@ -48,6 +75,7 @@
   h1 { font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: 0.02em; }
   .badge { font-family: var(--mono); font-size: 10px; padding: 2px 7px; background: var(--accent-dim); color: var(--accent-text); border: 1px solid var(--accent-dim2); border-radius: 3px; letter-spacing: 0.05em; }
   .header-right { display: flex; align-items: center; gap: 10px; }
+  .user-info { font-family: var(--mono); font-size: 11px; color: var(--text2); }
 
   .btn { font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border2); background: var(--bg2); color: var(--text2); cursor: pointer; letter-spacing: 0.03em; transition: all 0.15s; }
   .btn:hover { border-color: var(--accent); color: var(--accent-text); background: var(--accent-dim); }
@@ -66,25 +94,22 @@
   .sku-result { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
   .sku-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
   .sku-name { font-family: var(--mono); font-size: 16px; font-weight: 500; color: var(--accent-text); }
-  .sku-dims { font-family: var(--mono); font-size: 11px; color: var(--text3); }
-  .sku-pesos { display: flex; gap: 20px; margin-bottom: 20px; }
+  .sku-pesos { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
   .sku-peso-item { display: flex; flex-direction: column; gap: 2px; }
   .sku-peso-label { font-size: 11px; color: var(--text3); font-family: var(--mono); }
   .sku-peso-val { font-size: 13px; font-family: var(--mono); color: var(--text2); }
-
   .faixas-title { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
-
   .faixas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
   .faixa-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
-  .faixa-card-label { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 4px; }
-  .faixa-card-preco { font-family: var(--mono); font-size: 11px; color: var(--text2); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .faixa-card-preco { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .faixa-card-valor { font-family: var(--mono); font-size: 17px; font-weight: 500; color: var(--text); }
-  .faixa-card-valor span { font-size: 11px; color: var(--text3); font-weight: 400; }
-
-  .divider-h { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .faixa-card.destacado { background: var(--accent-dim2); border-color: var(--accent); }
+  .faixa-card.destacado .faixa-card-preco { color: var(--accent-text); }
+  .faixa-card.destacado .faixa-card-valor { color: var(--accent-text); }
+  .faixa-card.apagado { opacity: 0.35; }
 
   .sku-not-found { font-family: var(--mono); font-size: 13px; color: var(--text3); padding: 40px 0; text-align: center; }
-  .sugestoes { margin-top: 6px; }
+  .sugestoes { margin-top: 12px; }
   .sug-item { font-family: var(--mono); font-size: 12px; color: var(--text2); padding: 5px 10px; border-radius: 4px; cursor: pointer; display: inline-block; border: 1px solid var(--border); margin: 3px; transition: all 0.12s; }
   .sug-item:hover { border-color: var(--accent); color: var(--accent-text); background: var(--accent-dim); }
 
@@ -111,7 +136,6 @@
   .dim-cell { color: var(--text2); font-size: 11px; }
   .tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 500; letter-spacing: 0.04em; }
   .tag-cubico { background: var(--accent-dim2); color: var(--accent-text); border: 1px solid var(--accent-dim2); }
-  .tag-real { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,170,68,0.2); }
   .tag-xlsx { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(78,168,255,0.2); }
 
   .empty-state { text-align: center; padding: 60px 0; color: var(--text3); font-family: var(--mono); font-size: 12px; }
@@ -145,14 +169,10 @@
   .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
   .error-msg { font-family: var(--mono); font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
 
-  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 6px; padding: 10px 16px; font-family: var(--mono); font-size: 12px; color: var(--text); z-index: 200; opacity: 0; transform: translateY(8px); transition: all 0.2s; pointer-events: none; }
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 6px; padding: 10px 16px; font-family: var(--mono); font-size: 12px; color: var(--text); z-index: 200; opacity: 0; transform: translateY(8px); transition: all 0.2s; pointer-events: none; max-width: 320px; }
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.success { border-color: var(--accent-dim2); color: var(--accent-text); }
-
-  .faixa-card.destacado { background: var(--accent-dim2); border-color: var(--accent); }
-  .faixa-card.destacado .faixa-card-preco { color: var(--accent-text); }
-  .faixa-card.destacado .faixa-card-valor { color: var(--accent-text); }
-  .faixa-card.apagado { opacity: 0.35; }
+  .toast.error { border-color: var(--red); color: var(--red); }
 
   #theme-toggle {
     position: fixed; top: 18px; right: 24px; z-index: 300;
@@ -162,16 +182,43 @@
     transition: all 0.2s; line-height: 1; white-space: nowrap;
   }
   #theme-toggle:hover { border-color: var(--accent); color: var(--accent-text); background: var(--accent-dim); }
+
+  .saving-indicator { font-family: var(--mono); font-size: 10px; color: var(--text3); }
 </style>
 </head>
 <body class="light-mode">
 <script>(function(){var t=localStorage.getItem('tema');if(t==='dark')document.body.classList.remove('light-mode');})()</script>
 <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">☀️ Modo escuro</button>
 
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay" class="visible">
+  <div class="login-box">
+    <img src="logo2-cfn.png" alt="">
+    <h2>Calculadora de Frete ML</h2>
+    <p>Faça login com sua conta Google para continuar</p>
+    <button class="btn-google" onclick="fazerLogin()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Entrar com Google
+    </button>
+  </div>
+</div>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<div id="main-content" style="display:none;">
+
 <header>
   <div class="header-left">
     <h1>Frete ML Full</h1>
     <span class="badge">2026</span>
+  </div>
+  <div class="header-right">
+    <span class="user-info" id="user-info"></span>
+    <button class="btn" onclick="fazerLogout()">sair</button>
   </div>
 </header>
 
@@ -180,7 +227,7 @@
   <button id="tab-btn-produtos" class="tab active" onclick="switchTab('produtos')">Produtos</button>
 </div>
 
-<!-- ====== TAB: CONSULTA ====== -->
+<!-- TAB: CONSULTA -->
 <div id="tab-consulta" class="tab-content">
   <div class="consulta-wrap">
     <div class="search-sku-row">
@@ -201,16 +248,16 @@
   </div>
 </div>
 
-<!-- ====== TAB: PRODUTOS ====== -->
+<!-- TAB: PRODUTOS -->
 <div id="tab-produtos" class="tab-content active">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
     <div></div>
-    <div style="display:flex; gap:8px;">
+    <div style="display:flex; gap:8px; align-items:center;">
+      <span class="saving-indicator" id="saving-indicator"></span>
       <button class="btn" onclick="exportCSV()">↓ exportar CSV</button>
       <button class="btn btn-primary" onclick="abrirModal()">+ novo produto</button>
     </div>
   </div>
-
   <div class="search-wrap">
     <span class="search-icon">⌕</span>
     <input type="text" id="search" placeholder="buscar por SKU..." oninput="renderTabela()">
@@ -237,6 +284,8 @@
     <div>nenhum produto cadastrado ainda</div>
   </div>
 </div>
+
+</div><!-- /main-content -->
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" onclick="fecharModalOverlay(event)">
@@ -288,112 +337,301 @@
 
 <script>
 // ============================================================
-// TABELAS DE FRETE (extraídas do xlsx)
-// Formato: [limite_superior_kg, col1, col2, ...]
+// CONFIG
 // ============================================================
+const CLIENT_ID = '327580333878-ubsdn6929vejccckeic0kihn9fvqi5ab.apps.googleusercontent.com';
+const SHEETS_ID = '1cQb4EEQq5W2b0jgG_DDesDPoundNpz3sR78DYqisSaM';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile';
 
-// Tabela FIXA (até R$ 78,99): [lim, r0_18, r19_48, r49_78]
+// ============================================================
+// TABELAS DE FRETE
+// ============================================================
 const TABFIX = [[0.3,5.65,6.55,7.75],[0.5,5.95,6.65,7.85],[1,6.05,6.75,7.95],[1.5,6.15,6.85,8.05],[2,6.25,6.95,8.15],[3,6.35,7.95,8.55],[4,6.45,8.15,8.95],[5,6.55,8.35,9.75],[6,6.65,8.55,9.95],[7,6.75,8.75,10.15],[8,6.85,8.95,10.35],[9,6.95,9.15,10.55],[11,7.05,9.55,10.95],[13,7.15,9.95,11.35],[15,7.25,10.15,11.55],[17,7.35,10.35,11.75],[20,7.45,10.55,11.95],[25,7.65,10.95,12.15],[30,7.75,11.15,12.35],[40,7.85,11.35,12.55],[50,7.95,11.55,12.75],[60,8.05,11.75,12.95],[70,8.15,11.95,13.15],[80,8.25,12.15,13.35],[90,8.35,12.35,13.55],[100,8.45,12.55,13.75],[125,8.55,12.75,13.95],[150,8.65,12.75,14.15],[99999,8.75,12.75,14.35]];
-
-// Tabela VARI├üVEL (R$ 79+): [lim, r79_99, r100_119, r120_149, r150_199, r200+]
 const TABVAR = [[0.3,12.35,14.35,16.45,18.45,20.95],[0.5,13.25,15.45,17.65,19.85,22.55],[1,13.85,16.15,18.45,20.75,23.65],[1.5,14.15,16.45,18.85,21.15,24.65],[2,14.45,16.85,19.25,21.65,24.65],[3,15.75,18.35,21.05,23.65,26.25],[4,17.05,19.85,22.65,25.55,28.35],[5,18.45,21.55,24.65,27.75,30.75],[6,25.45,28.55,32.65,35.75,39.75],[7,27.05,31.05,36.05,40.05,44.05],[8,28.85,33.65,38.45,43.25,48.05],[9,29.65,34.55,39.55,44.45,49.35],[11,41.25,48.05,54.95,61.75,68.65],[13,42.15,49.25,56.25,63.25,70.25],[15,45.05,52.45,59.95,67.45,74.95],[17,48.55,56.05,63.55,70.75,78.65],[20,54.75,63.85,72.95,82.05,91.15],[25,64.05,75.05,84.75,95.35,105.95],[30,65.95,75.45,85.55,96.25,106.95],[40,67.75,78.95,88.95,99.15,107.05],[50,70.25,81.05,92.05,102.55,110.75],[60,74.95,86.45,98.15,109.35,118.15],[70,80.25,92.95,105.05,117.15,126.55],[80,83.95,97.05,109.85,122.45,132.25],[90,93.25,107.45,122.05,136.05,146.95],[100,106.55,123.95,139.55,155.55,167.95],[125,119.25,138.05,156.05,173.95,187.95],[150,126.55,146.15,165.65,184.65,199.45],[99999,166.15,192.45,217.55,242.55,261.95]];
 
-// Colunas de preço (para exibição)
-const COLUNAS_FIX = ['R$ 0ÔÇô18,99','R$ 19ÔÇô48,99','R$ 49ÔÇô78,99'];
-const COLUNAS_VAR = ['R$ 79ÔÇô99,99','R$ 100ÔÇô119,99','R$ 120ÔÇô149,99','R$ 150ÔÇô199,99','R$ 200+'];
+const PRODUTOS_XLSX = {"ALMO-01":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35},"ALMO-02":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35},"AMA-01":{"larg":12,"comp":8,"alt":34,"pesoReal":1.15},"ANDEMP1-01":{"larg":36,"comp":12,"alt":32.5,"pesoReal":1.7},"ANDEMP1-02":{"larg":46,"comp":11,"alt":33.5,"pesoReal":1.4},"ANDEMP3-01":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35},"ANDEMP3-02":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35},"ANDEMP3-03":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35},"ARACAB-BR":{"larg":19.5,"comp":6,"alt":57,"pesoReal":1.45},"ARACAB-PT":{"larg":19.5,"comp":6,"alt":57,"pesoReal":1.4},"ASSREDU-AZ":{"larg":50.5,"comp":7.5,"alt":37.5,"pesoReal":1.35},"ASSREDU-CZ":{"larg":51.3,"comp":7.5,"alt":37.5,"pesoReal":1.5},"ASSREDU-RS":{"larg":50.3,"comp":7.5,"alt":37.5,"pesoReal":1.45},"BATER1-AZ":{"larg":27,"comp":10,"alt":18,"pesoReal":0.3},"BATER1-VM":{"larg":27,"comp":10,"alt":18,"pesoReal":0.3},"BATER2-AZ":{"larg":36.1,"comp":16.5,"alt":31,"pesoReal":1.15},"BATER2-VM":{"larg":36.1,"comp":16.5,"alt":31,"pesoReal":1.15},"BIKE12-AZ":{"larg":70,"comp":18,"alt":29,"pesoReal":4.65},"BIKE12-BR":{"larg":69.5,"comp":17.5,"alt":28.5,"pesoReal":4.65},"BIKE12-PT":{"larg":70,"comp":16,"alt":28.5,"pesoReal":4.65},"BIKE12-RS":{"larg":70.2,"comp":16.5,"alt":29,"pesoReal":4.55},"BOLSA04-01":{"larg":25,"comp":7,"alt":30,"pesoReal":0.65},"BOLSA04-02":{"larg":30,"comp":7,"alt":32,"pesoReal":0.35},"BOLSA05-01":{"larg":29,"comp":8,"alt":28,"pesoReal":0.4},"BOLSA06-01":{"larg":29,"comp":10,"alt":28,"pesoReal":0.4},"BOLSA06-02":{"larg":26,"comp":6,"alt":27,"pesoReal":0.5},"BON-09":{"larg":20.2,"comp":13,"alt":47.5,"pesoReal":1.15},"CAB30-01":{"larg":40.5,"comp":32,"alt":10,"pesoReal":2.15},"CAB30-02":{"larg":40,"comp":32.5,"alt":9.5,"pesoReal":2.1},"CAB30-03":{"larg":40,"comp":32,"alt":9.5,"pesoReal":2.2},"CAB50-01":{"larg":39.5,"comp":32,"alt":14,"pesoReal":3.3},"CAB50-02":{"larg":40,"comp":32,"alt":14,"pesoReal":3.3},"CAB50-03":{"larg":40,"comp":32.3,"alt":14,"pesoReal":3.45},"CABINF20-AZ":{"larg":31.5,"comp":6.5,"alt":23.5,"pesoReal":0.8},"CABINF20-BG":{"larg":31,"comp":6.5,"alt":23.5,"pesoReal":0.8},"CABINF20-PT":{"larg":31,"comp":7,"alt":24,"pesoReal":0.8},"CABINF20-RS":{"larg":31,"comp":6.5,"alt":23.5,"pesoReal":0.8},"CABINF40-AZ":{"larg":31,"comp":11.5,"alt":23.5,"pesoReal":1.5},"CABINF40-BG":{"larg":31.5,"comp":12,"alt":23,"pesoReal":1.45},"CABINF40-PT":{"larg":31,"comp":12,"alt":24,"pesoReal":1.59},"CABINF40-RS":{"larg":31,"comp":12,"alt":24,"pesoReal":1.55},"CABMAN-BR":{"larg":60.5,"comp":6.5,"alt":37,"pesoReal":1.35},"CABMAN-BR2":{"larg":16.5,"comp":6,"alt":18,"pesoReal":0.65},"CABMAN-PT":{"larg":60.5,"comp":6.5,"alt":37,"pesoReal":1.35},"CABMAN-PT2":{"larg":16.5,"comp":6,"alt":18,"pesoReal":0.65},"CABMD1-10":{"larg":32,"comp":6,"alt":32.5,"pesoReal":1.175},"CABMD1-100":{"larg":33.5,"comp":33.5,"alt":62.5,"pesoReal":10.95},"CABMD1-20":{"larg":33,"comp":12.5,"alt":32,"pesoReal":2.25},"CABMD1-30":{"larg":32.5,"comp":18.5,"alt":32.5,"pesoReal":3.3},"CABREG-PT":{"larg":66.5,"comp":7.5,"alt":12,"pesoReal":1.25},"CADALM-AZ":{"larg":40,"comp":40,"alt":42.5,"pesoReal":1.65},"CADALM-RS":{"larg":40,"comp":40,"alt":42.5,"pesoReal":1.65},"CADALM2-AZ":{"larg":30,"comp":40,"alt":43,"pesoReal":3},"CADALM2-BR":{"larg":30,"comp":40,"alt":43,"pesoReal":3},"CADALM2-CZ":{"larg":30,"comp":40,"alt":43,"pesoReal":3},"CADALM2-RS":{"larg":30,"comp":40,"alt":43,"pesoReal":3},"CADALM3-AZ":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5},"CADALM3-CZ":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5},"CADALM3-RS":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5},"CADALM4-AZ":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4},"CADALM4-BR":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4},"CADALM4-CZ":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4},"CADALM4-RS":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4},"CADEINF01-AZ":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25},"CADEINF02-VD":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25},"CADEINF03-RS":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25},"CADEIR1-CZ":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05},"CADEIR1-PT":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05},"CADEIR1-VM":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05},"CAIXAORG-01":{"larg":52,"comp":5,"alt":30,"pesoReal":0.9},"CAIXAORG-02":{"larg":52,"comp":5,"alt":30,"pesoReal":0.9},"CAM-140":{"larg":86,"comp":25.5,"alt":15,"pesoReal":8.2},"CAM-180":{"larg":92,"comp":32,"alt":15.5,"pesoReal":12.15},"CAR1-CZ":{"larg":100,"comp":57,"alt":40,"pesoReal":18.45},"CAR2-BR":{"larg":100,"comp":57,"alt":40,"pesoReal":18.45},"CAR2-VM":{"larg":100,"comp":37.5,"alt":38,"pesoReal":18.2},"CAR4-AZ":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.3},"CAR4-LJ":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.35},"CAR4-VM":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.35},"CARDINO-01":{"larg":42.5,"comp":15,"alt":18,"pesoReal":0.85},"CARDINO-02":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85},"CARDINO-03":{"larg":42.5,"comp":15,"alt":18,"pesoReal":0.85},"CARDINO-04":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85},"CARDINO-05":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85},"CARMU-BR":{"larg":42,"comp":32.5,"alt":16,"pesoReal":2.65},"CARMU-PT":{"larg":42,"comp":33,"alt":16,"pesoReal":2.65},"CARMU2-BR":{"larg":35,"comp":26,"alt":20,"pesoReal":1.2},"CARMU2-PT":{"larg":35,"comp":26,"alt":20,"pesoReal":1.2},"CERCADO01-AZ":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15},"CERCADO01-CZ":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15},"CERCADO01-RS":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15},"CERCADO02-AZ":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71},"CERCADO02-CZ":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71},"CERCADO02-RS":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71},"CESTO-01":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35},"CESTO-02":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35},"CESTO-03":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35},"CESTO-04":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35},"CESTO-05":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35},"CHOC1-AM":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1},"CHOC1-AZ":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1},"CHOC1-BR":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1},"CHOC1-VD":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1},"CHOC2-AM":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1},"CHOC2-AZ":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1},"COZ01-01":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9},"COZ01-02":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9},"COZ01-03":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9},"COZ012-01":{"larg":36,"comp":12,"alt":28,"pesoReal":0.9},"COZ03-01":{"larg":25,"comp":9,"alt":33,"pesoReal":0.65},"COZ03-02":{"larg":25,"comp":9,"alt":33,"pesoReal":0.65},"COZ04-01":{"larg":42,"comp":13,"alt":47,"pesoReal":1.5},"COZ04-02":{"larg":27,"comp":15,"alt":49,"pesoReal":1.5},"COZ08-01":{"larg":67,"comp":15,"alt":53,"pesoReal":4.15},"CXRE04-01":{"larg":26,"comp":9.5,"alt":15,"pesoReal":0.35},"CXRE05-01":{"larg":29,"comp":18,"alt":24,"pesoReal":0.9},"DISP-01":{"larg":23,"comp":8,"alt":20,"pesoReal":0.2},"ESCAV1-AM":{"larg":52.5,"comp":27,"alt":25,"pesoReal":2.1},"ESCAV1-AZ":{"larg":55,"comp":27,"alt":25,"pesoReal":2.1},"ESCOR-03":{"larg":62.5,"comp":35,"alt":9,"pesoReal":2.1},"ESCOR-36":{"larg":37.05,"comp":12,"alt":26.5,"pesoReal":1.005},"ESCOR-38":{"larg":38,"comp":12,"alt":26,"pesoReal":1.15},"ESCOR7-AZ":{"larg":90,"comp":53,"alt":36,"pesoReal":12.2},"ESCOR7-RS":{"larg":90,"comp":53,"alt":36,"pesoReal":12.2},"FER01-01":{"larg":27.5,"comp":10,"alt":22,"pesoReal":0.8},"FER02-01":{"larg":36,"comp":8,"alt":40,"pesoReal":1.75},"GOL-01":{"larg":56,"comp":5,"alt":11,"pesoReal":0.3},"GOL-02":{"larg":61,"comp":6,"alt":19,"pesoReal":0.85},"GRORG1-CZ":{"larg":58,"comp":19,"alt":13,"pesoReal":2.25},"GRORG1-PT":{"larg":58,"comp":19,"alt":13,"pesoReal":2.25},"GUITMIC-AZ":{"larg":43.5,"comp":5.5,"alt":32,"pesoReal":0.6},"GUITMIC-RS":{"larg":43.5,"comp":5.5,"alt":32,"pesoReal":0.6},"JOGOPAN-01":{"larg":50.5,"comp":30,"alt":16.5,"pesoReal":4.2},"JOGOPAN-06":{"larg":50,"comp":30,"alt":16.5,"pesoReal":4.5},"JOGOPAN-07":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1},"JOGOPAN-08":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1},"JOGOPAN-09":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1},"MAGNET11-01":{"larg":30,"comp":7,"alt":22,"pesoReal":0.6},"MAGNET17-01":{"larg":23,"comp":23,"alt":8,"pesoReal":0.75},"MAGNET2-01":{"larg":20,"comp":11,"alt":4,"pesoReal":0.6},"MAGNET3-01":{"larg":29,"comp":10,"alt":23,"pesoReal":1.3},"MAGNET4-01":{"larg":34,"comp":8,"alt":34,"pesoReal":1.65},"MERCADO01-01":{"larg":45,"comp":26,"alt":45,"pesoReal":2.45},"MERCADO02-01":{"larg":45,"comp":26,"alt":45,"pesoReal":2.45},"MERCADO03-01":{"larg":56,"comp":21,"alt":48,"pesoReal":2.35},"MERCADO04-01":{"larg":39,"comp":14,"alt":29,"pesoReal":1.1},"MERCADO04-02":{"larg":39,"comp":14,"alt":29,"pesoReal":1.005},"MES-DINOAZ":{"larg":33,"comp":8,"alt":25,"pesoReal":0.7},"MES-DINORS":{"larg":33,"comp":8,"alt":25,"pesoReal":0.7},"MESBLC1-AZ":{"larg":35,"comp":11,"alt":23,"pesoReal":0.7},"MESBLC1-RS":{"larg":35,"comp":11,"alt":23,"pesoReal":0.7},"MIXER1-PT":{"larg":53,"comp":10,"alt":22,"pesoReal":1.2},"MOTO1-AZ":{"larg":91,"comp":34,"alt":48,"pesoReal":12.75},"MOTO1-VM":{"larg":91,"comp":34,"alt":48,"pesoReal":12.75},"PAT-01":{"larg":78,"comp":11,"alt":29,"pesoReal":4},"PAT-02":{"larg":78,"comp":11,"alt":29,"pesoReal":4},"PATINF-AZ":{"larg":49,"comp":16,"alt":28,"pesoReal":2.1},"PATINF-RS":{"larg":49,"comp":16,"alt":28,"pesoReal":2.1},"PATINFS-AZ":{"larg":57,"comp":14,"alt":24,"pesoReal":1.3},"PATINFS-PT":{"larg":57,"comp":13.5,"alt":24,"pesoReal":1.22},"PATINFS-RS":{"larg":57,"comp":14,"alt":24,"pesoReal":1.3},"PATALUM-RS-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PATALUM-RS-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PATALUM-RS-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PATALUM-PT-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PATALUM-PT-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PATALUM-PT-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PATALUM-AZ-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PATALUM-AZ-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PATALUM-AZ-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2},"PEGBIC1-VD":{"larg":19,"comp":16,"alt":30,"pesoReal":0.8},"PEGBIC2-RS":{"larg":19,"comp":16,"alt":30,"pesoReal":0.8},"PENTE1-01":{"larg":40,"comp":10,"alt":54,"pesoReal":1.45},"PENTE3-01":{"larg":29,"comp":6,"alt":28,"pesoReal":0.35},"PENTE3-02":{"larg":29,"comp":6,"alt":28,"pesoReal":0.35},"PENTE4-01":{"larg":45,"comp":7,"alt":28,"pesoReal":0.7},"PENTE4-02":{"larg":45,"comp":7,"alt":28,"pesoReal":0.7},"PIST-BOMB":{"larg":44,"comp":7,"alt":33,"pesoReal":0.8},"PIST-CON":{"larg":53,"comp":7,"alt":39,"pesoReal":1},"PIST-EST":{"larg":44,"comp":7,"alt":31,"pesoReal":0.7},"PIST-LAV":{"larg":39,"comp":6,"alt":30,"pesoReal":0.7},"PIST-POL":{"larg":44,"comp":7,"alt":33,"pesoReal":0.75},"PISTCON-180":{"larg":33,"comp":7,"alt":22,"pesoReal":0.5},"PISTCON-345":{"larg":35,"comp":10,"alt":27,"pesoReal":0.9},"PISTCON-98":{"larg":29,"comp":6,"alt":22,"pesoReal":0.45},"PISTDINO-217":{"larg":47,"comp":10,"alt":36,"pesoReal":1.4},"PISTDINO-277":{"larg":29,"comp":16,"alt":19,"pesoReal":1.25},"PISTDINO-92":{"larg":32,"comp":9,"alt":21,"pesoReal":0.6},"PISTGAR-BOM":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45},"PISTGAR-CON":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45},"PISTGAR-POL":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45},"PORTCHAV1-BG":{"larg":7.5,"comp":8.5,"alt":21,"pesoReal":0.8},"PORTCHAV2-BG":{"larg":19,"comp":9,"alt":26,"pesoReal":1.4},"PORTCHAV3-BG":{"larg":26,"comp":9,"alt":32,"pesoReal":2.3},"POTEH-01":{"larg":25,"comp":13,"alt":35.5,"pesoReal":1.95},"POTEH-03":{"larg":35,"comp":12.5,"alt":36,"pesoReal":3.15},"PRAN1-01":{"larg":38,"comp":9.5,"alt":67.5,"pesoReal":2},"PRAN3-01":{"larg":38,"comp":10,"alt":67.5,"pesoReal":2.05},"PTERNO-PT":{"larg":23,"comp":7,"alt":30,"pesoReal":0.35},"QUAD1-AM":{"larg":73,"comp":38,"alt":38,"pesoReal":6.9},"SAP01-BR":{"larg":51,"comp":7,"alt":16,"pesoReal":0.95},"SAP01-PT":{"larg":51,"comp":7,"alt":16,"pesoReal":0.95},"SUPVAR-AZ":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35},"SUPVAR-BLACK":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35},"SUPVAR-PT":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35},"SUPVAR2-AZ":{"larg":72,"comp":9,"alt":7,"pesoReal":2.45},"TAP6MM-01":{"larg":59,"comp":7,"alt":36,"pesoReal":0.4},"TAP6MM-02":{"larg":59,"comp":7,"alt":36,"pesoReal":0.4},"TAP8MM-01":{"larg":73.5,"comp":8,"alt":35.5,"pesoReal":0.45},"TAP8MM-02":{"larg":73.5,"comp":8,"alt":35.5,"pesoReal":0.45},"TAPINF1-AZ":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6},"TAPINF1-RS":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6},"TAPINF1-VD":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6},"TAPINF2-01":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6},"TAPINF2-02":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6},"TAPINF2-03":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6},"TEC01-AZ":{"larg":49,"comp":14.5,"alt":19.5,"pesoReal":1.35},"TEC01-RS":{"larg":54.5,"comp":10,"alt":47.5,"pesoReal":1.8},"TEND3-02":{"larg":32.5,"comp":4.5,"alt":24,"pesoReal":0.85},"TICO1-AM":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35},"TICO1-AZ":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35},"TICO1-BR":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35},"TICO1-RS":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35},"TICO1-VM":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35},"TICO2-AM":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8},"TICO2-AZ":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8},"TICO2-RS":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8},"TICO2-TR":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8},"TRIC1-BR":{"larg":69,"comp":39,"alt":40.5,"pesoReal":9},"TRIC1-RS":{"larg":69,"comp":39,"alt":41,"pesoReal":9},"TRIC2-AZ":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5},"TRIC2-BR":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5},"TRIC2-LJ":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5},"TRIC2-RS":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5},"TRIC2-VM":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5},"TRIC2EM1-AZ":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5},"TRIC2EM1-BR":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5},"TRIC2EM1-RS":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5},"TRIC2EM1-VM":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5},"TRICC-AM":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5},"TRICC-AZ":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5},"TRICC-PT":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5},"TRICC-RS":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5},"TRICC-VM":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5},"TRICSA-AM":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8},"TRICSA-AZ":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8},"TRICSA-BR":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8},"TRICSA-RS":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8},"TRICSA-VM":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8},"VACBAG04B-01":{"larg":25,"comp":6,"alt":36,"pesoReal":0.95},"VACBAG05B-01":{"larg":28,"comp":6,"alt":29,"pesoReal":0.4},"VACBAG10-01":{"larg":27,"comp":9,"alt":29,"pesoReal":1.3},"VACBAG10B-01":{"larg":30,"comp":7,"alt":32,"pesoReal":0.95}};
 
-// Produtos do xlsx (base fixa, não editável)
-const PRODUTOS_XLSX = {"ALMO-01":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35,"maiorPeso":1.17},"ALMO-02":{"larg":30,"comp":9,"alt":26,"pesoReal":0.35,"maiorPeso":1.17},"AMA-01":{"larg":12,"comp":8,"alt":34,"pesoReal":1.15,"maiorPeso":1.15},"ANDEMP1-01":{"larg":36,"comp":12,"alt":32.5,"pesoReal":1.7,"maiorPeso":2.34},"ANDEMP1-02":{"larg":46,"comp":11,"alt":33.5,"pesoReal":1.4,"maiorPeso":2.8251666666666666},"ANDEMP3-01":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ANDEMP3-02":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ANDEMP3-03":{"larg":37,"comp":12.5,"alt":33.5,"pesoReal":1.35,"maiorPeso":2.582291666666667},"ARACAB-BR":{"larg":19.5,"comp":6,"alt":57,"pesoReal":1.45,"maiorPeso":1.45},"ARACAB-PT":{"larg":19.5,"comp":6,"alt":57,"pesoReal":1.4,"maiorPeso":1.4},"ASSREDU-AZ":{"larg":50.5,"comp":7.5,"alt":37.5,"pesoReal":1.35,"maiorPeso":2.3671875},"ASSREDU-CZ":{"larg":51.3,"comp":7.5,"alt":37.5,"pesoReal":1.5,"maiorPeso":2.4046875},"ASSREDU-RS":{"larg":50.3,"comp":7.5,"alt":37.5,"pesoReal":1.45,"maiorPeso":2.3578125},"BATER1-AZ":{"larg":27,"comp":10,"alt":18,"pesoReal":0.3,"maiorPeso":0.81},"BATER1-VM":{"larg":27,"comp":10,"alt":18,"pesoReal":0.3,"maiorPeso":0.81},"BATER2-AZ":{"larg":36.1,"comp":16.5,"alt":31,"pesoReal":1.15,"maiorPeso":3.077525},"BATER2-VM":{"larg":36.1,"comp":16.5,"alt":31,"pesoReal":1.15,"maiorPeso":3.077525},"BIKE12-AZ":{"larg":70,"comp":18,"alt":29,"pesoReal":4.65,"maiorPeso":6.09},"BIKE12-BR":{"larg":69.5,"comp":17.5,"alt":28.5,"pesoReal":4.65,"maiorPeso":5.7771875},"BIKE12-PT":{"larg":70,"comp":16,"alt":28.5,"pesoReal":4.65,"maiorPeso":5.32},"BIKE12-RS":{"larg":70.2,"comp":16.5,"alt":29,"pesoReal":4.55,"maiorPeso":5.59845},"BOLSA04-01":{"larg":25,"comp":7,"alt":30,"pesoReal":0.65,"maiorPeso":0.875},"BOLSA04-02":{"larg":30,"comp":7,"alt":32,"pesoReal":0.35,"maiorPeso":1.12},"BOLSA05-01":{"larg":29,"comp":8,"alt":28,"pesoReal":0.4,"maiorPeso":1.0826666666666667},"BOLSA06-01":{"larg":29,"comp":10,"alt":28,"pesoReal":0.4,"maiorPeso":1.3533333333333333},"BOLSA06-02":{"larg":26,"comp":6,"alt":27,"pesoReal":0.5,"maiorPeso":0.702},"BON-09":{"larg":20.2,"comp":13,"alt":47.5,"pesoReal":1.15,"maiorPeso":2.078916666666666},"CAB30-01":{"larg":40.5,"comp":32,"alt":10,"pesoReal":2.15,"maiorPeso":2.16},"CAB30-02":{"larg":40,"comp":32.5,"alt":9.5,"pesoReal":2.1,"maiorPeso":2.1},"CAB30-03":{"larg":40,"comp":32,"alt":9.5,"pesoReal":2.2,"maiorPeso":2.2},"CAB50-01":{"larg":39.5,"comp":32,"alt":14,"pesoReal":3.3,"maiorPeso":3.3},"CAB50-02":{"larg":40,"comp":32,"alt":14,"pesoReal":3.3,"maiorPeso":3.3},"CAB50-03":{"larg":40,"comp":32.3,"alt":14,"pesoReal":3.45,"maiorPeso":3.45},"CABINF20-AZ":{"larg":31.5,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8019375},"CABINF20-BG":{"larg":31,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8},"CABINF20-PT":{"larg":31,"comp":7,"alt":24,"pesoReal":0.8,"maiorPeso":0.868},"CABINF20-RS":{"larg":31,"comp":6.5,"alt":23.5,"pesoReal":0.8,"maiorPeso":0.8},"CABINF40-AZ":{"larg":31,"comp":11.5,"alt":23.5,"pesoReal":1.5,"maiorPeso":1.5},"CABINF40-BG":{"larg":31.5,"comp":12,"alt":23,"pesoReal":1.45,"maiorPeso":1.449},"CABINF40-PT":{"larg":31,"comp":12,"alt":24,"pesoReal":1.59,"maiorPeso":1.59},"CABINF40-RS":{"larg":31,"comp":12,"alt":24,"pesoReal":1.55,"maiorPeso":1.55},"CABMAN-BR":{"larg":60.5,"comp":6.5,"alt":37,"pesoReal":1.35,"maiorPeso":2.4250416666666665},"CABMAN-BR2":{"larg":16.5,"comp":6,"alt":18,"pesoReal":0.65,"maiorPeso":0.65},"CABMAN-PT":{"larg":60.5,"comp":6.5,"alt":37,"pesoReal":1.35,"maiorPeso":2.4250416666666665},"CABMAN-PT2":{"larg":16.5,"comp":6,"alt":18,"pesoReal":0.65,"maiorPeso":0.65},"CABMD1-10":{"larg":32,"comp":6,"alt":32.5,"pesoReal":1.175,"maiorPeso":1.175},"CABMD1-100":{"larg":33.5,"comp":33.5,"alt":62.5,"pesoReal":10.95,"maiorPeso":11.690104166666666},"CABMD1-20":{"larg":33,"comp":12.5,"alt":32,"pesoReal":2.25,"maiorPeso":2.25},"CABMD1-30":{"larg":32.5,"comp":18.5,"alt":32.5,"pesoReal":3.3,"maiorPeso":3.3},"CABREG-PT":{"larg":66.5,"comp":7.5,"alt":12,"pesoReal":1.25,"maiorPeso":1.25},"CADALM-AZ":{"larg":40,"comp":40,"alt":42.5,"pesoReal":1.65,"maiorPeso":11.333333333333334},"CADALM-RS":{"larg":40,"comp":40,"alt":42.5,"pesoReal":1.65,"maiorPeso":11.333333333333334},"CADALM2-AZ":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-BR":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-CZ":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM2-RS":{"larg":30,"comp":40,"alt":43,"pesoReal":3,"maiorPeso":8.6},"CADALM3-AZ":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":8.91},"CADALM3-CZ":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":8.91},"CADALM3-RS":{"larg":27,"comp":44,"alt":45,"pesoReal":4.5,"maiorPeso":1.73},"CADALM4-AZ":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-BR":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-CZ":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADALM4-RS":{"larg":43.5,"comp":55.5,"alt":27.5,"pesoReal":4,"maiorPeso":11.0653125},"CADEINF01-AZ":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEINF02-VD":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEINF03-RS":{"larg":46.5,"comp":8,"alt":42,"pesoReal":2.25,"maiorPeso":2.604},"CADEIR1-CZ":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CADEIR1-PT":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CADEIR1-VM":{"larg":44,"comp":27,"alt":70,"pesoReal":5.05,"maiorPeso":13.86},"CAIXAORG-01":{"larg":52,"comp":5,"alt":30,"pesoReal":0.9,"maiorPeso":1.3},"CAIXAORG-02":{"larg":52,"comp":5,"alt":30,"pesoReal":0.9,"maiorPeso":1.3},"CAM-140":{"larg":86,"comp":25.5,"alt":15,"pesoReal":8.2,"maiorPeso":8.2},"CAM-180":{"larg":92,"comp":32,"alt":15.5,"pesoReal":12.15,"maiorPeso":12.15},"CAR1-CZ":{"larg":100,"comp":57,"alt":40,"pesoReal":18.45,"maiorPeso":38},"CAR2-BR":{"larg":100,"comp":57,"alt":40,"pesoReal":18.45,"maiorPeso":38},"CAR2-VM":{"larg":100,"comp":37.5,"alt":38,"pesoReal":18.2,"maiorPeso":23.75},"CAR4-AZ":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.3,"maiorPeso":2.82975},"CAR4-LJ":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.35,"maiorPeso":2.82975},"CAR4-VM":{"larg":49,"comp":21,"alt":16.5,"pesoReal":1.35,"maiorPeso":2.82975},"CARDINO-01":{"larg":42.5,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.9125},"CARDINO-02":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARDINO-03":{"larg":42.5,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.9125},"CARDINO-04":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARDINO-05":{"larg":43,"comp":15,"alt":18,"pesoReal":0.85,"maiorPeso":1.935},"CARMU-BR":{"larg":42,"comp":32.5,"alt":16,"pesoReal":2.65,"maiorPeso":3.64},"CARMU-PT":{"larg":42,"comp":33,"alt":16,"pesoReal":2.65,"maiorPeso":3.696},"CARMU2-BR":{"larg":35,"comp":26,"alt":20,"pesoReal":1.2,"maiorPeso":3.033333333333333},"CARMU2-PT":{"larg":35,"comp":26,"alt":20,"pesoReal":1.2,"maiorPeso":3.033333333333333},"CERCADO01-AZ":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO01-CZ":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO01-RS":{"larg":60,"comp":16,"alt":18,"pesoReal":2.15,"maiorPeso":2.88},"CERCADO02-AZ":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CERCADO02-CZ":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CERCADO02-RS":{"larg":58,"comp":20,"alt":21,"pesoReal":3.71,"maiorPeso":4.06},"CESTO-01":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-02":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-03":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-04":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CESTO-05":{"larg":50,"comp":6,"alt":34,"pesoReal":1.35,"maiorPeso":1.7},"CHOC1-AM":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-AZ":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-BR":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC1-VD":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC2-AM":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"CHOC2-AZ":{"larg":17,"comp":5,"alt":10,"pesoReal":0.1,"maiorPeso":0.14166666666666666},"COZ01-01":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ01-02":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ01-03":{"larg":25.5,"comp":12,"alt":33.5,"pesoReal":0.9,"maiorPeso":1.7085},"COZ012-01":{"larg":36,"comp":12,"alt":28,"pesoReal":0.9,"maiorPeso":2.016},"COZ03-01":{"larg":25,"comp":9,"alt":33,"pesoReal":0.65,"maiorPeso":1.2375},"COZ03-02":{"larg":25,"comp":9,"alt":33,"pesoReal":0.65,"maiorPeso":1.2375},"COZ04-01":{"larg":42,"comp":13,"alt":47,"pesoReal":1.5,"maiorPeso":4.277},"COZ04-02":{"larg":27,"comp":15,"alt":49,"pesoReal":1.5,"maiorPeso":3.3075},"COZ08-01":{"larg":67,"comp":15,"alt":53,"pesoReal":4.15,"maiorPeso":8.8775},"CXRE04-01":{"larg":26,"comp":9.5,"alt":15,"pesoReal":0.35,"maiorPeso":0.6175},"CXRE05-01":{"larg":29,"comp":18,"alt":24,"pesoReal":0.9,"maiorPeso":2.088},"DISP-01":{"larg":23,"comp":8,"alt":20,"pesoReal":0.2,"maiorPeso":0.6133333333333333},"ESCAV1-AM":{"larg":52.5,"comp":27,"alt":25,"pesoReal":2.1,"maiorPeso":5.90625},"ESCAV1-AZ":{"larg":55,"comp":27,"alt":25,"pesoReal":2.1,"maiorPeso":6.1875},"ESCOR-03":{"larg":62.5,"comp":35,"alt":9,"pesoReal":2.1,"maiorPeso":3.28125},"ESCOR-36":{"larg":37.05,"comp":12,"alt":26.5,"pesoReal":1.005,"maiorPeso":1.96365},"ESCOR-38":{"larg":38,"comp":12,"alt":26,"pesoReal":1.15,"maiorPeso":1.976},"ESCOR7-AZ":{"larg":90,"comp":53,"alt":36,"pesoReal":12.2,"maiorPeso":28.62},"ESCOR7-RS":{"larg":90,"comp":53,"alt":36,"pesoReal":12.2,"maiorPeso":28.62},"FER01-01":{"larg":27.5,"comp":10,"alt":22,"pesoReal":0.8,"maiorPeso":1.0083333333333333},"FER02-01":{"larg":36,"comp":8,"alt":40,"pesoReal":1.75,"maiorPeso":1.92},"GOL-01":{"larg":56,"comp":5,"alt":11,"pesoReal":0.3,"maiorPeso":0.5133333333333333},"GOL-02":{"larg":61,"comp":6,"alt":19,"pesoReal":0.85,"maiorPeso":1.159},"GRORG1-CZ":{"larg":58,"comp":19,"alt":13,"pesoReal":2.25,"maiorPeso":2.3876666666666666},"GRORG1-PT":{"larg":58,"comp":19,"alt":13,"pesoReal":2.25,"maiorPeso":2.3876666666666666},"GUITMIC-AZ":{"larg":43.5,"comp":5.5,"alt":32,"pesoReal":0.6,"maiorPeso":1.276},"GUITMIC-RS":{"larg":43.5,"comp":5.5,"alt":32,"pesoReal":0.6,"maiorPeso":1.276},"JOGOPAN-01":{"larg":50.5,"comp":30,"alt":16.5,"pesoReal":4.2,"maiorPeso":4.2},"JOGOPAN-06":{"larg":50,"comp":30,"alt":16.5,"pesoReal":4.5,"maiorPeso":4.5},"JOGOPAN-07":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"JOGOPAN-08":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"JOGOPAN-09":{"larg":48,"comp":19.5,"alt":26,"pesoReal":4.1,"maiorPeso":4.1},"MAGNET11-01":{"larg":30,"comp":7,"alt":22,"pesoReal":0.6,"maiorPeso":0.77},"MAGNET17-01":{"larg":23,"comp":23,"alt":8,"pesoReal":0.75,"maiorPeso":0.75},"MAGNET2-01":{"larg":20,"comp":11,"alt":4,"pesoReal":0.6,"maiorPeso":0.6},"MAGNET3-01":{"larg":29,"comp":10,"alt":23,"pesoReal":1.3,"maiorPeso":1.3},"MAGNET4-01":{"larg":34,"comp":8,"alt":34,"pesoReal":1.65,"maiorPeso":1.65},"MERCADO01-01":{"larg":45,"comp":26,"alt":45,"pesoReal":2.45,"maiorPeso":8.775},"MERCADO02-01":{"larg":45,"comp":26,"alt":45,"pesoReal":2.45,"maiorPeso":8.775},"MERCADO03-01":{"larg":56,"comp":21,"alt":48,"pesoReal":2.35,"maiorPeso":9.408},"MERCADO04-01":{"larg":39,"comp":14,"alt":29,"pesoReal":1.1,"maiorPeso":2.639},"MERCADO04-02":{"larg":39,"comp":14,"alt":29,"pesoReal":1.005,"maiorPeso":2.639},"MES-DINOAZ":{"larg":33,"comp":8,"alt":25,"pesoReal":0.7,"maiorPeso":1.1},"MES-DINORS":{"larg":33,"comp":8,"alt":25,"pesoReal":0.7,"maiorPeso":1.1},"MESBLC1-AZ":{"larg":35,"comp":11,"alt":23,"pesoReal":0.7,"maiorPeso":1.4758333333333333},"MESBLC1-RS":{"larg":35,"comp":11,"alt":23,"pesoReal":0.7,"maiorPeso":1.4758333333333333},"MIXER1-PT":{"larg":53,"comp":10,"alt":22,"pesoReal":1.2,"maiorPeso":1.9433333333333334},"MOTO1-AZ":{"larg":91,"comp":34,"alt":48,"pesoReal":12.75,"maiorPeso":24.752},"MOTO1-VM":{"larg":91,"comp":34,"alt":48,"pesoReal":12.75,"maiorPeso":24.752},"PAT-01":{"larg":78,"comp":11,"alt":29,"pesoReal":4,"maiorPeso":4.147},"PAT-02":{"larg":78,"comp":11,"alt":29,"pesoReal":4,"maiorPeso":4.147},"PATINF-AZ":{"larg":49,"comp":16,"alt":28,"pesoReal":2.1,"maiorPeso":3.6586666666666665},"PATINF-RS":{"larg":49,"comp":16,"alt":28,"pesoReal":2.1,"maiorPeso":3.6586666666666665},"PATINFS-AZ":{"larg":57,"comp":14,"alt":24,"pesoReal":1.3,"maiorPeso":3.192},"PATINFS-PT":{"larg":57,"comp":13.5,"alt":24,"pesoReal":1.22,"maiorPeso":3.078},"PATINFS-RS":{"larg":57,"comp":14,"alt":24,"pesoReal":1.3,"maiorPeso":3.192},"PATALUM-RS-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-RS-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-RS-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-PT-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-P":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-M":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PATALUM-AZ-G":{"larg":9.7,"comp":31,"alt":24.4,"pesoReal":2,"maiorPeso":2},"PEGBIC1-VD":{"larg":19,"comp":16,"alt":30,"pesoReal":0.8,"maiorPeso":1.52},"PEGBIC2-RS":{"larg":19,"comp":16,"alt":30,"pesoReal":0.8,"maiorPeso":1.52},"PENTE1-01":{"larg":40,"comp":10,"alt":54,"pesoReal":1.45,"maiorPeso":3.6},"PENTE3-01":{"larg":29,"comp":6,"alt":28,"pesoReal":0.35,"maiorPeso":0.812},"PENTE3-02":{"larg":29,"comp":6,"alt":28,"pesoReal":0.35,"maiorPeso":0.812},"PENTE4-01":{"larg":45,"comp":7,"alt":28,"pesoReal":0.7,"maiorPeso":1.47},"PENTE4-02":{"larg":45,"comp":7,"alt":28,"pesoReal":0.7,"maiorPeso":1.47},"PIST-BOMB":{"larg":44,"comp":7,"alt":33,"pesoReal":0.8,"maiorPeso":1.694},"PIST-CON":{"larg":53,"comp":7,"alt":39,"pesoReal":1,"maiorPeso":2.4115},"PIST-EST":{"larg":44,"comp":7,"alt":31,"pesoReal":0.7,"maiorPeso":1.5913333333333333},"PIST-LAV":{"larg":39,"comp":6,"alt":30,"pesoReal":0.7,"maiorPeso":1.17},"PIST-POL":{"larg":44,"comp":7,"alt":33,"pesoReal":0.75,"maiorPeso":1.694},"PISTCON-180":{"larg":33,"comp":7,"alt":22,"pesoReal":0.5,"maiorPeso":0.847},"PISTCON-345":{"larg":35,"comp":10,"alt":27,"pesoReal":0.9,"maiorPeso":1.575},"PISTCON-98":{"larg":29,"comp":6,"alt":22,"pesoReal":0.45,"maiorPeso":0.638},"PISTDINO-217":{"larg":47,"comp":10,"alt":36,"pesoReal":1.4,"maiorPeso":2.82},"PISTDINO-277":{"larg":29,"comp":16,"alt":19,"pesoReal":1.25,"maiorPeso":1.4693333333333334},"PISTDINO-92":{"larg":32,"comp":9,"alt":21,"pesoReal":0.6,"maiorPeso":1.008},"PISTGAR-BOM":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PISTGAR-CON":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PISTGAR-POL":{"larg":51,"comp":9,"alt":38,"pesoReal":1.45,"maiorPeso":2.907},"PORTCHAV1-BG":{"larg":7.5,"comp":8.5,"alt":21,"pesoReal":0.8,"maiorPeso":0.8},"PORTCHAV2-BG":{"larg":19,"comp":9,"alt":26,"pesoReal":1.4,"maiorPeso":1.4},"PORTCHAV3-BG":{"larg":26,"comp":9,"alt":32,"pesoReal":2.3,"maiorPeso":2.3},"POTEH-01":{"larg":25,"comp":13,"alt":35.5,"pesoReal":1.95,"maiorPeso":1.95},"POTEH-03":{"larg":35,"comp":12.5,"alt":36,"pesoReal":3.15,"maiorPeso":3.15},"PRAN1-01":{"larg":38,"comp":9.5,"alt":67.5,"pesoReal":2,"maiorPeso":4.06125},"PRAN3-01":{"larg":38,"comp":10,"alt":67.5,"pesoReal":2.05,"maiorPeso":4.275},"PTERNO-PT":{"larg":23,"comp":7,"alt":30,"pesoReal":0.35,"maiorPeso":0.805},"QUAD1-AM":{"larg":73,"comp":38,"alt":38,"pesoReal":6.9,"maiorPeso":17.568666666666665},"SAP01-BR":{"larg":51,"comp":7,"alt":16,"pesoReal":0.95,"maiorPeso":0.952},"SAP01-PT":{"larg":51,"comp":7,"alt":16,"pesoReal":0.95,"maiorPeso":0.952},"SUPVAR-AZ":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR-BLACK":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR-PT":{"larg":72,"comp":8,"alt":7,"pesoReal":2.35,"maiorPeso":2.35},"SUPVAR2-AZ":{"larg":72,"comp":9,"alt":7,"pesoReal":2.45,"maiorPeso":2.45},"TAP6MM-01":{"larg":59,"comp":7,"alt":36,"pesoReal":0.4,"maiorPeso":2.478},"TAP6MM-02":{"larg":59,"comp":7,"alt":36,"pesoReal":0.4,"maiorPeso":2.478},"TAP8MM-01":{"larg":73.5,"comp":8,"alt":35.5,"pesoReal":0.45,"maiorPeso":3.479},"TAP8MM-02":{"larg":73.5,"comp":8,"alt":35.5,"pesoReal":0.45,"maiorPeso":3.479},"TAPINF1-AZ":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF1-RS":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF1-VD":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-01":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-02":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TAPINF2-03":{"larg":40,"comp":9,"alt":29,"pesoReal":0.6,"maiorPeso":1.74},"TEC01-AZ":{"larg":49,"comp":14.5,"alt":19.5,"pesoReal":1.35,"maiorPeso":2.309125},"TEC01-RS":{"larg":54.5,"comp":10,"alt":47.5,"pesoReal":1.8,"maiorPeso":4.314583333333333},"TEND3-02":{"larg":32.5,"comp":4.5,"alt":24,"pesoReal":0.85,"maiorPeso":0.85},"TICO1-AM":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-AZ":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-BR":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-RS":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO1-VM":{"larg":50,"comp":15,"alt":19,"pesoReal":1.35,"maiorPeso":2.375},"TICO2-AM":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-AZ":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-RS":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TICO2-TR":{"larg":55,"comp":25,"alt":16,"pesoReal":1.8,"maiorPeso":3.6666666666666665},"TRIC1-BR":{"larg":69,"comp":39,"alt":40.5,"pesoReal":9,"maiorPeso":18.16425},"TRIC1-RS":{"larg":69,"comp":39,"alt":41,"pesoReal":9,"maiorPeso":18.3885},"TRIC2-AZ":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-BR":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-LJ":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-RS":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2-VM":{"larg":63,"comp":27,"alt":35,"pesoReal":4.5,"maiorPeso":9.9225},"TRIC2EM1-AZ":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-BR":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-RS":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRIC2EM1-VM":{"larg":58,"comp":28,"alt":25,"pesoReal":3.5,"maiorPeso":6.766666666666667},"TRICC-AM":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-AZ":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-PT":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-RS":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICC-VM":{"larg":64,"comp":24,"alt":37,"pesoReal":6.5,"maiorPeso":9.472},"TRICSA-AM":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-AZ":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-BR":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-RS":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"TRICSA-VM":{"larg":56,"comp":26,"alt":26,"pesoReal":2.8,"maiorPeso":6.309333333333333},"VACBAG04B-01":{"larg":25,"comp":6,"alt":36,"pesoReal":0.95,"maiorPeso":0.95},"VACBAG05B-01":{"larg":28,"comp":6,"alt":29,"pesoReal":0.4,"maiorPeso":0.812},"VACBAG10-01":{"larg":27,"comp":9,"alt":29,"pesoReal":1.3,"maiorPeso":1.3},"VACBAG10B-01":{"larg":30,"comp":7,"alt":32,"pesoReal":0.95,"maiorPeso":1.12}};
-
-const STORAGE_KEY = 'frete-ml-produtos-v2';
-let produtos = [];
-let editandoIndex = -1;
+// ============================================================
+// ESTADO GLOBAL
+// ============================================================
+let accessToken = null;
+let usuarioNome = null;
+let precosSheets = {}; // { SKU: precoVenda }
+let cadastroSheets = {}; // { SKU: { comp, larg, alt, pesoReal } }
+let excluidosSheets = new Set(); // Set de SKUs excluídos
+let editandoSku = null; // SKU sendo editado no modal
 let editandoPrecoSku = null;
+
+// ============================================================
+// AUTENTICAÇÃO GOOGLE
+// ============================================================
+function fazerLogin() {
+  const params = new URLSearchParams({
+    client_id: CLIENT_ID,
+    redirect_uri: window.location.origin + window.location.pathname,
+    response_type: 'token',
+    scope: SCOPES,
+    prompt: 'select_account'
+  });
+  const w = window.open('https://accounts.google.com/o/oauth2/v2/auth?' + params, 'oauth', 'width=500,height=600');
+  const timer = setInterval(() => {
+    try {
+      if (w.closed) { clearInterval(timer); return; }
+      const hash = w.location.hash;
+      if (hash && hash.includes('access_token')) {
+        clearInterval(timer);
+        w.close();
+        const p = new URLSearchParams(hash.slice(1));
+        accessToken = p.get('access_token');
+        posLoginGoogle();
+      }
+    } catch(e) {}
+  }, 300);
+}
+
+async function posLoginGoogle() {
+  document.querySelector('.login-box p').textContent = 'Carregando dados...';
+  try {
+    // Busca nome do usuário
+    const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: 'Bearer ' + accessToken }
+    });
+    const info = await res.json();
+    usuarioNome = info.given_name || info.name || 'Usuário';
+    document.getElementById('user-info').textContent = usuarioNome;
+    await inicializarSheets();
+    document.getElementById('login-overlay').classList.remove('visible');
+    document.getElementById('main-content').style.display = 'block';
+    renderTabela();
+  } catch(e) {
+    document.querySelector('.login-box p').textContent = 'Erro ao carregar. Tente novamente.';
+    console.error(e);
+  }
+}
+
+function fazerLogout() {
+  accessToken = null;
+  usuarioNome = null;
+  precosSheets = {};
+  cadastroSheets = {};
+  excluidosSheets = new Set();
+  document.getElementById('main-content').style.display = 'none';
+  document.querySelector('.login-box p').textContent = 'Faça login com sua conta Google para continuar';
+  document.getElementById('login-overlay').classList.add('visible');
+}
+
+// ============================================================
+// GOOGLE SHEETS API
+// ============================================================
+async function sheetsRequest(path, method='GET', body=null) {
+  const url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEETS_ID + path;
+  const opts = {
+    method,
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error('Sheets API error: ' + res.status + ' ' + err);
+  }
+  return res.json();
+}
+
+async function garantirAba(nome, headers) {
+  // Verifica se a aba existe; se não, cria
+  const meta = await sheetsRequest('');
+  const existe = meta.sheets.some(s => s.properties.title === nome);
+  if (!existe) {
+    await sheetsRequest(':batchUpdate', 'POST', {
+      requests: [{ addSheet: { properties: { title: nome } } }]
+    });
+    // Adiciona cabeçalho
+    await sheetsRequest('/values/' + encodeURIComponent(nome + '!A1') + ':append?valueInputOption=RAW', 'POST', {
+      values: [headers]
+    });
+  }
+}
+
+async function inicializarSheets() {
+  // Garante as 4 abas
+  await garantirAba('Produtos',  ['SKU', 'PrecoVenda']);
+  await garantirAba('Historico', ['DataHora', 'Usuario', 'SKU', 'PrecoAnterior', 'PrecoNovo']);
+  await garantirAba('Cadastro',  ['SKU', 'Comp', 'Larg', 'Alt', 'PesoReal', 'CadastradoPor', 'DataHora']);
+  await garantirAba('Excluidos', ['SKU', 'ExcluidoPor', 'DataHora']);
+  // Carrega dados em paralelo
+  await Promise.all([carregarPrecos(), carregarCadastro(), carregarExcluidos()]);
+}
+
+async function carregarPrecos() {
+  try {
+    const res = await sheetsRequest('/values/' + encodeURIComponent('Produtos!A:B'));
+    const rows = res.values || [];
+    precosSheets = {};
+    for (let i = 1; i < rows.length; i++) {
+      const sku = (rows[i][0] || '').trim().toUpperCase();
+      const preco = parseFloat(rows[i][1]) || null;
+      if (sku) precosSheets[sku] = preco;
+    }
+  } catch(e) { console.error('Erro ao carregar preços:', e); }
+}
+
+async function carregarCadastro() {
+  try {
+    const res = await sheetsRequest('/values/' + encodeURIComponent('Cadastro!A:G'));
+    const rows = res.values || [];
+    cadastroSheets = {};
+    for (let i = 1; i < rows.length; i++) {
+      const sku = (rows[i][0] || '').trim().toUpperCase();
+      if (!sku) continue;
+      cadastroSheets[sku] = {
+        comp:     parseFloat(rows[i][1]) || 0,
+        larg:     parseFloat(rows[i][2]) || 0,
+        alt:      parseFloat(rows[i][3]) || 0,
+        pesoReal: parseFloat(rows[i][4]) || 0,
+      };
+    }
+  } catch(e) { console.error('Erro ao carregar cadastro:', e); }
+}
+
+async function carregarExcluidos() {
+  try {
+    const res = await sheetsRequest('/values/' + encodeURIComponent('Excluidos!A:A'));
+    const rows = res.values || [];
+    excluidosSheets = new Set();
+    for (let i = 1; i < rows.length; i++) {
+      const sku = (rows[i][0] || '').trim().toUpperCase();
+      if (sku) excluidosSheets.add(sku);
+    }
+  } catch(e) { console.error('Erro ao carregar excluídos:', e); }
+}
+
+// Upsert de preço: atualiza linha existente ou append
+async function salvarPrecoSheets(sku, novoPreco, precoAnterior) {
+  sku = sku.toUpperCase();
+  // Busca linha existente
+  const res = await sheetsRequest('/values/' + encodeURIComponent('Produtos!A:A'));
+  const rows = res.values || [];
+  let linhaIdx = -1;
+  for (let i = 1; i < rows.length; i++) {
+    if ((rows[i][0] || '').trim().toUpperCase() === sku) { linhaIdx = i + 1; break; }
+  }
+  if (linhaIdx > 0) {
+    // Atualiza
+    await sheetsRequest('/values/' + encodeURIComponent('Produtos!A' + linhaIdx + ':B' + linhaIdx) + '?valueInputOption=RAW', 'PUT', {
+      values: [[sku, novoPreco !== null ? novoPreco : '']]
+    });
+  } else {
+    // Append
+    await sheetsRequest('/values/' + encodeURIComponent('Produtos!A:B') + ':append?valueInputOption=RAW', 'POST', {
+      values: [[sku, novoPreco !== null ? novoPreco : '']]
+    });
+  }
+  // Histórico
+  const agora = new Date().toLocaleString('pt-BR');
+  await sheetsRequest('/values/' + encodeURIComponent('Historico!A:E') + ':append?valueInputOption=RAW', 'POST', {
+    values: [[agora, usuarioNome, sku, precoAnterior !== null ? precoAnterior : '', novoPreco !== null ? novoPreco : '']]
+  });
+  // Atualiza memória
+  precosSheets[sku] = novoPreco;
+}
+
+// Upsert de cadastro de dimensões
+async function salvarCadastroSheets(sku, comp, larg, alt, pesoReal) {
+  sku = sku.toUpperCase();
+  const res = await sheetsRequest('/values/' + encodeURIComponent('Cadastro!A:A'));
+  const rows = res.values || [];
+  let linhaIdx = -1;
+  for (let i = 1; i < rows.length; i++) {
+    if ((rows[i][0] || '').trim().toUpperCase() === sku) { linhaIdx = i + 1; break; }
+  }
+  const agora = new Date().toLocaleString('pt-BR');
+  const linha = [sku, comp, larg, alt, pesoReal, usuarioNome, agora];
+  if (linhaIdx > 0) {
+    await sheetsRequest('/values/' + encodeURIComponent('Cadastro!A' + linhaIdx + ':G' + linhaIdx) + '?valueInputOption=RAW', 'PUT', {
+      values: [linha]
+    });
+  } else {
+    await sheetsRequest('/values/' + encodeURIComponent('Cadastro!A:G') + ':append?valueInputOption=RAW', 'POST', {
+      values: [linha]
+    });
+  }
+  cadastroSheets[sku] = { comp, larg, alt, pesoReal };
+}
+
+// Adiciona SKU à aba Excluidos
+async function excluirProdutoSheets(sku) {
+  sku = sku.toUpperCase();
+  const agora = new Date().toLocaleString('pt-BR');
+  await sheetsRequest('/values/' + encodeURIComponent('Excluidos!A:C') + ':append?valueInputOption=RAW', 'POST', {
+    values: [[sku, usuarioNome, agora]]
+  });
+  excluidosSheets.add(sku);
+}
 
 // ============================================================
 // LÓGICA DE FRETE
 // ============================================================
-const FAIXAS_LABEL = [
-  [0.3,  'Até 0,3 kg'],
-  [0.5,  'De 0,3 a 0,5 kg'],
-  [1,    'De 0,5 a 1 kg'],
-  [1.5,  'De 1 a 1,5 kg'],
-  [2,    'De 1,5 a 2 kg'],
-  [3,    'De 2 a 3 kg'],
-  [4,    'De 3 a 4 kg'],
-  [5,    'De 4 a 5 kg'],
-  [6,    'De 5 a 6 kg'],
-  [7,    'De 6 a 7 kg'],
-  [8,    'De 7 a 8 kg'],
-  [9,    'De 8 a 9 kg'],
-  [11,   'De 9 a 11 kg'],
-  [13,   'De 11 a 13 kg'],
-  [15,   'De 13 a 15 kg'],
-  [17,   'De 15 a 17 kg'],
-  [20,   'De 17 a 20 kg'],
-  [25,   'De 20 a 25 kg'],
-  [30,   'De 25 a 30 kg'],
-  [40,   'De 30 a 40 kg'],
-  [50,   'De 40 a 50 kg'],
-  [60,   'De 50 a 60 kg'],
-  [70,   'De 60 a 70 kg'],
-  [80,   'De 70 a 80 kg'],
-  [90,   'De 80 a 90 kg'],
-  [100,  'De 90 a 100 kg'],
-  [125,  'De 100 a 125 kg'],
-  [150,  'De 125 a 150 kg'],
-  [99999,'Mais de 150 kg'],
-];
-
-function faixaLabel(pesoKg) {
-  const f = FAIXAS_LABEL.find(r => pesoKg <= r[0]);
-  return f ? f[1] : 'Mais de 150 kg';
-}
-
 function buscarFrete(pesoKg) {
-  // Retorna objeto com todos os 8 valores de frete
   const fix = TABFIX.find(r => pesoKg <= r[0]);
   const vari = TABVAR.find(r => pesoKg <= r[0]);
   if (!fix || !vari) return null;
-  return {
-    r0_18:   fix[1], r19_48: fix[2], r49_78: fix[3],
-    r79_99:  vari[1], r100_119: vari[2], r120_149: vari[3],
-    r150_199: vari[4], r200: vari[5]
-  };
+  return { r0_18: fix[1], r19_48: fix[2], r49_78: fix[3], r79_99: vari[1], r100_119: vari[2], r120_149: vari[3], r150_199: vari[4], r200: vari[5] };
 }
 
-// Retorna o frete específico dado um preço de venda
 function buscarFretePorPreco(pesoKg, preco) {
   if (!preco || preco <= 0) return null;
   const f = buscarFrete(pesoKg);
   if (!f) return null;
-  if (preco < 19)   return { valor: f.r0_18,    idx: 0 };
-  if (preco < 49)   return { valor: f.r19_48,   idx: 1 };
-  if (preco < 79)   return { valor: f.r49_78,   idx: 2 };
-  if (preco < 100)  return { valor: f.r79_99,   idx: 3 };
-  if (preco < 120)  return { valor: f.r100_119, idx: 4 };
-  if (preco < 150)  return { valor: f.r120_149, idx: 5 };
-  if (preco < 200)  return { valor: f.r150_199, idx: 6 };
+  if (preco < 19)  return { valor: f.r0_18,    idx: 0 };
+  if (preco < 49)  return { valor: f.r19_48,   idx: 1 };
+  if (preco < 79)  return { valor: f.r49_78,   idx: 2 };
+  if (preco < 100) return { valor: f.r79_99,   idx: 3 };
+  if (preco < 120) return { valor: f.r100_119, idx: 4 };
+  if (preco < 150) return { valor: f.r120_149, idx: 5 };
+  if (preco < 200) return { valor: f.r150_199, idx: 6 };
   return { valor: f.r200, idx: 7 };
 }
 
 function calcularPesoML(p) {
   const cubico = (p.comp * p.larg * p.alt) / 6000;
-  const pesoReal = p.pesoReal || 0;
-  return Math.max(cubico, pesoReal);
+  return Math.max(cubico, p.pesoReal || 0);
 }
 
-function freteMin(peso) {
-  const f = buscarFrete(peso);
-  return f ? Math.min(f.r0_18, f.r19_48, f.r49_78) : null;
-}
-function freteMax(peso) {
-  const f = buscarFrete(peso);
-  return f ? f.r200 : null;
-}
-
+function freteMax(peso) { const f = buscarFrete(peso); return f ? f.r200 : null; }
 function fmt(n, dec=2) { return n.toFixed(dec).replace('.', ','); }
-function fmtR(n) { return 'R$ ' + n.toFixed(2).replace('.', ','); }
+
+// ============================================================
+// FONTE DE DADOS UNIFICADA
+// ============================================================
+function getProduto(sku) {
+  sku = sku.toUpperCase();
+  if (excluidosSheets.has(sku)) return null;
+  // Dimensões: cadastroSheets > PRODUTOS_XLSX
+  const dims = cadastroSheets[sku] || PRODUTOS_XLSX[sku];
+  if (!dims) return null;
+  return {
+    sku,
+    comp: dims.comp, larg: dims.larg, alt: dims.alt, pesoReal: dims.pesoReal || 0,
+    precoVenda: precosSheets[sku] || null,
+    origem: cadastroSheets[sku] ? 'cadastro' : 'xlsx'
+  };
+}
+
+function listarTodosProdutos() {
+  const todos = new Set([
+    ...Object.keys(PRODUTOS_XLSX),
+    ...Object.keys(cadastroSheets)
+  ]);
+  return [...todos]
+    .filter(sku => !excluidosSheets.has(sku))
+    .map(sku => getProduto(sku))
+    .filter(Boolean)
+    .sort((a, b) => a.sku.localeCompare(b.sku));
+}
 
 // ============================================================
 // TABS
@@ -412,19 +650,21 @@ function switchTab(name) {
 // ============================================================
 // CONSULTA SKU
 // ============================================================
-function contarProdutos() {
-  const xlsxList = Object.entries(PRODUTOS_XLSX).map(([sku, d]) => ({ ...d, sku }));
-  const localSkus = new Set(produtos.map(p => p.sku.toUpperCase()));
-  const todos = [
-    ...xlsxList.filter(p => !localSkus.has(p.sku)),
-    ...produtos
-  ];
-  const comPreco = todos.filter(p => p.precoVenda && p.precoVenda > 0).length;
-  return { comPreco, semPreco: todos.length - comPreco };
-}
+const FAIXAS_LABEL = [
+  [0.3,'Até 0,3 kg'],[0.5,'De 0,3 a 0,5 kg'],[1,'De 0,5 a 1 kg'],[1.5,'De 1 a 1,5 kg'],
+  [2,'De 1,5 a 2 kg'],[3,'De 2 a 3 kg'],[4,'De 3 a 4 kg'],[5,'De 4 a 5 kg'],
+  [6,'De 5 a 6 kg'],[7,'De 6 a 7 kg'],[8,'De 7 a 8 kg'],[9,'De 8 a 9 kg'],
+  [11,'De 9 a 11 kg'],[13,'De 11 a 13 kg'],[15,'De 13 a 15 kg'],[17,'De 15 a 17 kg'],
+  [20,'De 17 a 20 kg'],[25,'De 20 a 25 kg'],[30,'De 25 a 30 kg'],[40,'De 30 a 40 kg'],
+  [50,'De 40 a 50 kg'],[60,'De 50 a 60 kg'],[70,'De 60 a 70 kg'],[80,'De 70 a 80 kg'],
+  [90,'De 80 a 90 kg'],[100,'De 90 a 100 kg'],[125,'De 100 a 125 kg'],[150,'De 125 a 150 kg'],[99999,'Mais de 150 kg']
+];
+function faixaLabel(pesoKg) { const f = FAIXAS_LABEL.find(r => pesoKg <= r[0]); return f ? f[1] : 'Mais de 150 kg'; }
 
 function renderEmptyStateConsulta(div) {
-  const { comPreco, semPreco } = contarProdutos();
+  const todos = listarTodosProdutos();
+  const comPreco = todos.filter(p => p.precoVenda && p.precoVenda > 0).length;
+  const semPreco = todos.length - comPreco;
   div.innerHTML = `
     <div style="text-align:center;padding:48px 0;">
       <img src="logo2-cfn.png" alt="" style="width:72px;opacity:0.55;display:block;margin:0 auto 20px;">
@@ -442,39 +682,21 @@ function renderEmptyStateConsulta(div) {
     </div>`;
 }
 
-function getProduto(sku) {
-  // Prioridade: produtos do localStorage, depois do xlsx
-  const local = produtos.find(p => p.sku.toUpperCase() === sku.toUpperCase());
-  if (local) return { ...local, origem: 'local' };
-  const xlsx = PRODUTOS_XLSX[sku.toUpperCase()];
-  if (xlsx) return { ...xlsx, sku: sku.toUpperCase(), origem: 'xlsx' };
-  return null;
-}
-
 function consultarSKU() {
   const q = document.getElementById('sku-input').value.trim().toUpperCase();
   const div = document.getElementById('sku-resultado');
   const simularRow = document.getElementById('simular-preco-row');
-
   if (!q) { simularRow.style.display = 'none'; renderEmptyStateConsulta(div); return; }
-
   const p = getProduto(q);
-
   if (p) {
     simularRow.style.display = 'block';
     renderResultadoSKU(p, div);
   } else {
     simularRow.style.display = 'none';
-    // Sugestões
-    const todas = [...Object.keys(PRODUTOS_XLSX), ...produtos.map(p=>p.sku)];
-    const unicas = [...new Set(todas)];
-    const sugs = unicas.filter(s => s.includes(q)).slice(0, 8);
+    const todos = listarTodosProdutos().map(x => x.sku);
+    const sugs = todos.filter(s => s.includes(q)).slice(0, 8);
     let html = `<div class="sku-not-found">SKU não encontrado: <strong>${q}</strong>`;
-    if (sugs.length) {
-      html += `<div class="sugestoes" style="margin-top:12px;">` +
-        sugs.map(s => `<span class="sug-item" onclick="selecionarSug('${s}')">${s}</span>`).join('') +
-        `</div>`;
-    }
+    if (sugs.length) html += `<div class="sugestoes">${sugs.map(s => `<span class="sug-item" onclick="selecionarSug('${s}')">${s}</span>`).join('')}</div>`;
     html += `</div>`;
     div.innerHTML = html;
   }
@@ -489,200 +711,158 @@ function renderResultadoSKU(p, div) {
   const pesoML = calcularPesoML(p);
   const cubico = (p.comp * p.larg * p.alt) / 6000;
   const fretes = buscarFrete(pesoML);
-  const base = cubico >= (p.pesoReal||0) ? 'cúbico' : 'real';
-  const origemBadge = p.origem === 'xlsx'
-    ? `<span class="tag tag-xlsx" style="font-size:10px;">xlsx</span>`
-    : `<span class="tag tag-cubico" style="font-size:10px;">local</span>`;
-
-  // Pegar preço simulado (do input) ou preço cadastrado do produto
+  const base = cubico >= (p.pesoReal || 0) ? 'cúbico' : 'real';
   const simInput = parseFloat(document.getElementById('simular-preco-input').value) || 0;
-  const precoSimulado = simInput > 0 ? simInput : (p.precoVenda || 0);
-  const freteSimulado = precoSimulado > 0 ? buscarFretePorPreco(pesoML, precoSimulado) : null;
+  const precoAtivo = simInput > 0 ? simInput : (p.precoVenda || 0);
+  const freteSimulado = precoAtivo > 0 ? buscarFretePorPreco(pesoML, precoAtivo) : null;
   const idxDestacado = freteSimulado ? freteSimulado.idx : -1;
-
   const todasColunas = [
-    { label: 'R$ 0ÔÇô18,99',    val: fretes.r0_18 },
-    { label: 'R$ 19ÔÇô48,99',   val: fretes.r19_48 },
-    { label: 'R$ 49ÔÇô78,99',   val: fretes.r49_78 },
-    { label: 'R$ 79ÔÇô99,99',   val: fretes.r79_99 },
-    { label: 'R$ 100ÔÇô119,99', val: fretes.r100_119 },
-    { label: 'R$ 120ÔÇô149,99', val: fretes.r120_149 },
-    { label: 'R$ 150ÔÇô199,99', val: fretes.r150_199 },
+    { label: 'R$ 0–18,99',    val: fretes.r0_18 },
+    { label: 'R$ 19–48,99',   val: fretes.r19_48 },
+    { label: 'R$ 49–78,99',   val: fretes.r49_78 },
+    { label: 'R$ 79–99,99',   val: fretes.r79_99 },
+    { label: 'R$ 100–119,99', val: fretes.r100_119 },
+    { label: 'R$ 120–149,99', val: fretes.r120_149 },
+    { label: 'R$ 150–199,99', val: fretes.r150_199 },
     { label: 'R$ 200+',       val: fretes.r200 },
   ];
-
-  // Badge de preço simulado
   let precoSimBadge = '';
-  if (precoSimulado > 0) {
+  if (precoAtivo > 0) {
     const fonte = simInput > 0 ? 'simulado' : 'cadastrado';
-    precoSimBadge = `<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;background:var(--accent-dim2);color:var(--accent-text);border:1px solid var(--accent-dim2);margin-left:8px;">R$ ${fmt(precoSimulado)} (${fonte})</span>`;
+    precoSimBadge = `<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;background:var(--accent-dim2);color:var(--accent-text);border:1px solid var(--accent-dim2);margin-left:8px;">R$ ${fmt(precoAtivo)} (${fonte})</span>`;
   }
-
   div.innerHTML = `
     <div class="sku-result">
       <div class="sku-header">
         <span class="sku-name">${p.sku}</span>
-        ${origemBadge}
+        <span class="tag tag-xlsx" style="font-size:10px;">${p.origem}</span>
         ${precoSimBadge}
       </div>
-      <div class="sku-pesos" style="margin-bottom:16px;">
+      <div class="sku-pesos">
         <div class="sku-peso-item"><span class="sku-peso-label">Dimensões</span><span class="sku-peso-val">${p.comp} × ${p.larg} × ${p.alt} cm</span></div>
-        <div class="sku-peso-item"><span class="sku-peso-label">Peso real</span><span class="sku-peso-val">${fmt(p.pesoReal||0)} kg</span></div>
+        <div class="sku-peso-item"><span class="sku-peso-label">Peso real</span><span class="sku-peso-val">${fmt(p.pesoReal)} kg</span></div>
         <div class="sku-peso-item"><span class="sku-peso-label">Peso cúbico</span><span class="sku-peso-val">${fmt(cubico)} kg</span></div>
         <div class="sku-peso-item"><span class="sku-peso-label">Faixa ML (${base})</span><span class="sku-peso-val" style="color:var(--accent-text);font-weight:500;">${faixaLabel(pesoML)}</span></div>
       </div>
       <div class="faixas-title">frete por faixa de preço de venda${idxDestacado >= 0 ? ' — card destacado é o ativo' : ''}</div>
       <div class="faixas-grid">
         ${todasColunas.map((c, i) => {
-          let cardClass = 'faixa-card';
-          if (idxDestacado >= 0) {
-            cardClass += i === idxDestacado ? ' destacado' : ' apagado';
-          }
-          return `<div class="${cardClass}">
-            <div class="faixa-card-preco">${c.label}</div>
-            <div class="faixa-card-valor">R$ ${fmt(c.val)}</div>
-          </div>`;
+          let cls = 'faixa-card';
+          if (idxDestacado >= 0) cls += i === idxDestacado ? ' destacado' : ' apagado';
+          return `<div class="${cls}"><div class="faixa-card-preco">${c.label}</div><div class="faixa-card-valor">R$ ${fmt(c.val)}</div></div>`;
         }).join('')}
       </div>
     </div>`;
 }
 
 // ============================================================
-// LISTA / CRUD
+// TABELA DE PRODUTOS
 // ============================================================
-function carregar() {
-  try { produtos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { produtos = []; }
-}
-function salvarStorage() { localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos)); }
-
 function renderTabela() {
-  const q = document.getElementById('search').value.toLowerCase();
-
-  const xlsxList = Object.entries(PRODUTOS_XLSX).map(([sku, d]) => ({ ...d, sku, origem: 'xlsx' }));
-  const localSkus = new Set(produtos.map(p => p.sku.toUpperCase()));
-  const base = [
-    ...xlsxList.filter(p => !localSkus.has(p.sku)),
-    ...produtos.map(p => ({ ...p, origem: 'local' }))
-  ].sort((a,b) => a.sku.localeCompare(b.sku));
-
-  const filtrados = base.filter(p => p.sku.toLowerCase().includes(q));
-  document.getElementById('count-label').textContent = filtrados.length === 1 ? '1 produto' : `${filtrados.length} produtos`;
-
+  const q = (document.getElementById('search').value || '').toLowerCase();
+  const lista = listarTodosProdutos().filter(p => p.sku.toLowerCase().includes(q));
+  document.getElementById('count-label').textContent = lista.length === 1 ? '1 produto' : `${lista.length} produtos`;
   const emptyState = document.getElementById('empty-state');
-  if (filtrados.length === 0) { document.getElementById('tbody').innerHTML = ''; emptyState.style.display='block'; return; }
+  if (lista.length === 0) { document.getElementById('tbody').innerHTML = ''; emptyState.style.display = 'block'; return; }
   emptyState.style.display = 'none';
-
-  document.getElementById('tbody').innerHTML = filtrados.map(p => {
+  document.getElementById('tbody').innerHTML = lista.map(p => {
     const pesoML = calcularPesoML(p);
+    const preco = p.precoVenda;
     let freCell;
-    const preco = p.precoVenda || null;
     if (preco && preco > 0) {
       const fe = buscarFretePorPreco(pesoML, preco);
       freCell = fe ? `<td class="right accent">R$ ${fmt(fe.valor)}</td>` : `<td class="right muted">—</td>`;
     } else {
       freCell = `<td class="right"><span style="font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">sem preço</span></td>`;
     }
-    const localIdx = produtos.findIndex(lp => lp.sku.toUpperCase() === p.sku.toUpperCase());
-    const editIdx = localIdx >= 0 ? localIdx : -1;
     const isEditingPrice = editandoPrecoSku === p.sku;
-    let precoVendaCell;
+    let precoCell;
     if (isEditingPrice) {
-      precoVendaCell = `<td class="right"><input id="inline-preco-input" type="number" step="0.01" min="0" value="${p.precoVenda || ''}" style="font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--accent);color:var(--text);padding:3px 7px;border-radius:4px;width:100px;outline:none;text-align:right;" placeholder="0.00" onkeydown="if(event.key==='Enter')salvarPrecoInline();else if(event.key==='Escape'){editandoPrecoSku=null;renderTabela();}"></td>`;
+      precoCell = `<td class="right"><input id="inline-preco-input" type="number" step="0.01" min="0" value="${preco || ''}" style="font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--accent);color:var(--text);padding:3px 7px;border-radius:4px;width:100px;outline:none;text-align:right;" placeholder="0.00" onkeydown="if(event.key==='Enter')salvarPrecoInline();else if(event.key==='Escape'){editandoPrecoSku=null;renderTabela();}"></td>`;
     } else {
-      precoVendaCell = p.precoVenda && p.precoVenda > 0
-        ? `<td class="right accent">R$ ${fmt(p.precoVenda)}</td>`
+      precoCell = preco && preco > 0
+        ? `<td class="right accent">R$ ${fmt(preco)}</td>`
         : `<td class="right muted">—</td>`;
     }
-    const btnDetalhes = `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="editarProduto(${editIdx},'${p.sku}')">Ver detalhes</button>`;
+    const btnDetalhes = `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="abrirModalEdicao('${p.sku}')">Ver detalhes</button>`;
     const btnPreco = isEditingPrice
       ? `<button class="btn btn-primary" style="padding:4px 10px;font-size:10px;" onclick="salvarPrecoInline()">Salvar</button>`
       : `<button class="btn" style="padding:4px 10px;font-size:10px;" onclick="iniciarEdicaoPreco('${p.sku}')">Alterar Preço</button>`;
     return `<tr>
       <td class="sku-cell">${p.sku}</td>
       <td class="dim-cell">${p.comp} × ${p.larg} × ${p.alt}</td>
-      <td class="right muted">${fmt(p.pesoReal||0)} kg</td>
+      <td class="right muted">${fmt(p.pesoReal)} kg</td>
       <td class="right muted">${fmt(pesoML)} kg</td>
       ${freCell}
-      ${precoVendaCell}
+      ${precoCell}
       <td class="right" style="white-space:nowrap;"><div style="display:inline-flex;gap:6px;align-items:center;">${btnDetalhes}${btnPreco}</div></td>
     </tr>`;
   }).join('');
 }
 
-function editarProduto(idx, sku) {
-  if (idx >= 0) { abrirModal(idx); return; }
-  // Produto é do xlsx — pre-preenche o modal para criar versão local
-  const p = PRODUTOS_XLSX[sku];
-  if (!p) return;
-  editandoIndex = -1;
-  document.getElementById('modal-title').textContent = 'Editar produto (xlsx)';
-  document.getElementById('f-sku').value = sku;
-  document.getElementById('f-c').value = p.comp;
-  document.getElementById('f-l').value = p.larg;
-  document.getElementById('f-a').value = p.alt;
-  document.getElementById('f-peso').value = p.pesoReal || '';
-  document.getElementById('f-preco').value = '';
-  document.getElementById('btn-deletar').style.display = 'none';
-  document.getElementById('error-msg').style.display = 'none';
-  atualizarPreview();
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function confirmarDeletar(idx, sku) {
-  if (idx < 0) { toast('Produto do xlsx não pode ser deletado.'); return; }
-  if (confirm('Tem certeza que deseja deletar o produto?')) {
-    produtos.splice(idx, 1); salvarStorage(); renderTabela(); toast('Produto removido.');
-  }
-}
-
+// ============================================================
+// EDIÇÃO INLINE DE PREÇO
+// ============================================================
 function iniciarEdicaoPreco(sku) {
   editandoPrecoSku = sku;
   renderTabela();
   setTimeout(() => { const inp = document.getElementById('inline-preco-input'); if (inp) inp.focus(); }, 0);
 }
 
-function salvarPrecoInline() {
+async function salvarPrecoInline() {
   const input = document.getElementById('inline-preco-input');
   const novoPreco = parseFloat(input ? input.value : '') || null;
   const sku = editandoPrecoSku;
   if (!sku) return;
-  const localIdx = produtos.findIndex(p => p.sku.toUpperCase() === sku.toUpperCase());
-  if (localIdx >= 0) {
-    produtos[localIdx].precoVenda = novoPreco;
-  } else {
-    const xlsx = PRODUTOS_XLSX[sku];
-    if (xlsx) produtos.push({ ...xlsx, sku, precoVenda: novoPreco });
-  }
-  salvarStorage();
+  const precoAnterior = precosSheets[sku] || null;
   editandoPrecoSku = null;
-  renderTabela();
-  toast('Preço salvo.', true);
+  setSaving(true);
+  try {
+    await salvarPrecoSheets(sku, novoPreco, precoAnterior);
+    renderTabela();
+    toast('Preço salvo.', true);
+  } catch(e) {
+    toast('Erro ao salvar. Tente novamente.', false, true);
+    console.error(e);
+  } finally {
+    setSaving(false);
+  }
 }
 
-function abrirModal(idx=-1) {
-  editandoIndex = idx;
+// ============================================================
+// MODAL
+// ============================================================
+function abrirModal() {
+  editandoSku = null;
+  document.getElementById('modal-title').textContent = 'Novo produto';
+  ['f-sku','f-c','f-l','f-a','f-peso','f-preco'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-sku').removeAttribute('readonly');
+  document.getElementById('btn-deletar').style.display = 'none';
   document.getElementById('error-msg').style.display = 'none';
-  if (idx >= 0) {
-    const p = produtos[idx];
-    document.getElementById('modal-title').textContent = 'Editar produto';
-    document.getElementById('f-sku').value = p.sku;
-    document.getElementById('f-c').value = p.comp;
-    document.getElementById('f-l').value = p.larg;
-    document.getElementById('f-a').value = p.alt;
-    document.getElementById('f-peso').value = p.pesoReal || '';
-    document.getElementById('f-preco').value = p.precoVenda || '';
-    document.getElementById('btn-deletar').style.display = 'inline-block';
-  } else {
-    document.getElementById('modal-title').textContent = 'Novo produto';
-    ['f-sku','f-c','f-l','f-a','f-peso','f-preco'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('btn-deletar').style.display = 'none';
-  }
   atualizarPreview();
   document.getElementById('modal-overlay').classList.add('open');
   document.getElementById('f-sku').focus();
 }
 
-function fecharModal() { document.getElementById('modal-overlay').classList.remove('open'); editandoIndex = -1; }
+function abrirModalEdicao(sku) {
+  const p = getProduto(sku);
+  if (!p) return;
+  editandoSku = sku;
+  document.getElementById('modal-title').textContent = 'Editar produto';
+  document.getElementById('f-sku').value = sku;
+  document.getElementById('f-sku').setAttribute('readonly', true);
+  document.getElementById('f-c').value = p.comp;
+  document.getElementById('f-l').value = p.larg;
+  document.getElementById('f-a').value = p.alt;
+  document.getElementById('f-peso').value = p.pesoReal || '';
+  document.getElementById('f-preco').value = p.precoVenda || '';
+  document.getElementById('btn-deletar').style.display = 'inline-block';
+  document.getElementById('error-msg').style.display = 'none';
+  atualizarPreview();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function fecharModal() { document.getElementById('modal-overlay').classList.remove('open'); editandoSku = null; }
 function fecharModalOverlay(e) { if (e.target === document.getElementById('modal-overlay')) fecharModal(); }
 
 function atualizarPreview() {
@@ -712,42 +892,61 @@ function atualizarPreview() {
   }
 }
 
-function salvarProduto() {
-  const sku = document.getElementById('f-sku').value.trim().toUpperCase();
+async function salvarProduto() {
+  const skuRaw = editandoSku || document.getElementById('f-sku').value.trim().toUpperCase();
   const c = parseFloat(document.getElementById('f-c').value);
   const l = parseFloat(document.getElementById('f-l').value);
   const a = parseFloat(document.getElementById('f-a').value);
   const pr = parseFloat(document.getElementById('f-peso').value) || 0;
   const pv = parseFloat(document.getElementById('f-preco').value) || null;
-  if (!sku||!c||!l||!a) { document.getElementById('error-msg').style.display='block'; return; }
-  const prod = { sku, comp:c, larg:l, alt:a, pesoReal:pr||null, precoVenda: pv };
-  if (editandoIndex >= 0) { produtos[editandoIndex] = prod; toast('Atualizado.', true); }
-  else { produtos.push(prod); toast('Salvo.', true); }
-  salvarStorage(); fecharModal(); renderTabela();
-}
-
-function deletarProduto() {
-  if (editandoIndex < 0) return;
-  confirmarDeletar(editandoIndex, produtos[editandoIndex].sku);
+  if (!skuRaw||!c||!l||!a) { document.getElementById('error-msg').style.display='block'; return; }
   fecharModal();
+  setSaving(true);
+  try {
+    await salvarCadastroSheets(skuRaw, c, l, a, pr);
+    if (pv !== null) {
+      const precoAnterior = precosSheets[skuRaw] || null;
+      await salvarPrecoSheets(skuRaw, pv, precoAnterior);
+    }
+    renderTabela();
+    toast('Produto salvo.', true);
+  } catch(e) {
+    toast('Erro ao salvar. Tente novamente.', false, true);
+    console.error(e);
+  } finally {
+    setSaving(false);
+  }
 }
 
-function exportCSV() {
-  const xlsxList = Object.entries(PRODUTOS_XLSX).map(([sku, d]) => ({ ...d, sku, origem: 'xlsx' }));
-  const localSkus = new Set(produtos.map(p => p.sku.toUpperCase()));
-  const base = [
-    ...xlsxList.filter(p => !localSkus.has(p.sku)),
-    ...produtos.map(p => ({ ...p, origem: 'local' }))
-  ].sort((a,b) => a.sku.localeCompare(b.sku));
+async function deletarProduto() {
+  if (!editandoSku) return;
+  const sku = editandoSku;
+  if (!confirm('Tem certeza que deseja deletar o produto?')) return;
+  fecharModal();
+  setSaving(true);
+  try {
+    await excluirProdutoSheets(sku);
+    renderTabela();
+    toast('Produto removido.', true);
+  } catch(e) {
+    toast('Erro ao remover. Tente novamente.', false, true);
+    console.error(e);
+  } finally {
+    setSaving(false);
+  }
+}
 
-  const header = 'SKU,Comp,Larg,Alt,Peso Real,Peso ML,Preco Venda,Frete Especifico,Frete max,Base,Origem';
-  const linhas = base.map(p => {
+// ============================================================
+// EXPORT CSV
+// ============================================================
+function exportCSV() {
+  const lista = listarTodosProdutos();
+  const header = 'SKU,Comp,Larg,Alt,Peso Real,Peso ML,Preco Venda,Frete Especifico,Frete Max,Origem';
+  const linhas = lista.map(p => {
     const pm = calcularPesoML(p);
-    const cub = (p.comp*p.larg*p.alt)/6000;
-    const base2 = cub >= (p.pesoReal||0) ? 'cubico' : 'real';
     const pv = p.precoVenda || '';
     const fe = pv ? buscarFretePorPreco(pm, pv) : null;
-    return [p.sku,p.comp,p.larg,p.alt,p.pesoReal||0,fmt(pm),pv,fe?fmt(fe.valor):'',fmt(freteMax(pm)),base2,p.origem].join(',');
+    return [p.sku,p.comp,p.larg,p.alt,p.pesoReal||0,fmt(pm),pv,fe?fmt(fe.valor):'',fmt(freteMax(pm)),p.origem].join(',');
   });
   const csv = [header,...linhas].join('\n');
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
@@ -757,18 +956,21 @@ function exportCSV() {
   toast('CSV exportado!', true);
 }
 
-let toastTimer;
-function toast(msg, success=false) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show' + (success ? ' success' : '');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.className = 'toast'; }, 2500);
+// ============================================================
+// UTILITÁRIOS
+// ============================================================
+function setSaving(on) {
+  document.getElementById('saving-indicator').textContent = on ? 'Salvando...' : '';
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') fecharModal();
-});
+let toastTimer;
+function toast(msg, success=false, isError=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (success ? ' success' : '') + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'toast'; }, 3000);
+}
 
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-mode');
@@ -781,9 +983,8 @@ function atualizarIconeTema() {
     document.body.classList.contains('light-mode') ? '☀️ Modo escuro' : '🌙 Modo claro';
 }
 
-carregar();
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
 atualizarIconeTema();
-renderTabela();
 </script>
 </body>
 </html>
